@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "infinity-scraper"
+version = "1.0.0"
+description = "World-Class Web Scraping, Dynamic SPA Rendering, YouTube Transcripts, and OSINT MCP Server by VirajVerse"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "VirajVerse", url = "https://github.com/virajverse" }
+]
+dependencies = [
+    "mcp>=1.2.0",
+    "httpx[brotli,http2,socks]>=0.27.0",
+    "primp>=0.15.0",
+    "playwright>=1.40.0",
+    "playwright-stealth>=1.0.0",
+    "trafilatura>=1.9.0",
+    "markdownify>=0.11.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.0.0",
+    "pypdf>=4.0.0",
+    "ddgs>=9.0.0",
+    "youtube-transcript-api>=0.6.0",
+    "pydantic>=2.0.0",
+    "pillow>=10.0.0",
+]
+
+[project.scripts]
+infinity-scraper-mcp = "infinity_scraper.server:main"
+infinity-scraper-cli = "infinity_scraper.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,189 @@
+{
+  "timestamp": "2026-08-26T18:38:19Z",
+  "total_tests": 20,
+  "passed_tests": 20,
+  "success_rate": "100.0%",
+  "avg_latency_ms": 1680.6,
+  "results": [
+    {
+      "id": 1,
+      "name": "Real Wikipedia Long-Form Scrape (AI)",
+      "category": "Scraping",
+      "elapsed_ms": 5128.63,
+      "quality_metric": "HTTP 200 | Extracted: 417,187 chars (27971 words) | Tables: 17",
+      "passed": true,
+      "sample_detail": "# Artificial intelligence\n\n![Page semi-protected](https://upload.wikimedia.org/wikipedia/en/thumb/1/1b/Semi-protection-shackle.svg/20px-Semi-protection-shackle.svg.png?utm_source=en.wikipedia.org&utm_"
+    },
+    {
+      "id": 2,
+      "name": "Real HackerNews SPA/Dynamic Scrape (Playwright)",
+      "category": "Browser",
+      "elapsed_ms": 8101.72,
+      "quality_metric": "HTTP 200 | Extracted 194 Live Story Links | Content: 13,900 chars",
+      "passed": true,
+      "sample_detail": "| 1. |  | [GLM-5.3-Flash](https://z.ai/blog/glm-5.3-flash) ([z.ai](https://news.ycombinator.com/from?site=z.ai) ) | \n|  | 571 points by [Philpax](https://news.ycombinator.com/user?id=Philpax)[4 hours "
+    },
+    {
+      "id": 3,
+      "name": "Real Live Search (DeepSeek-V3)",
+      "category": "Search",
+      "elapsed_ms": 1455.22,
+      "quality_metric": "Discovered: 5 Real Search Results with Snippets",
+      "passed": true,
+      "sample_detail": "DeepSeek - Wikipedia"
+    },
+    {
+      "id": 4,
+      "name": "Real Search & Auto-Scrape Synthesizer",
+      "category": "Synthesis",
+      "elapsed_ms": 1904.34,
+      "quality_metric": "Scraped 3 Live Websites | Unified Report: 25,867 chars",
+      "passed": true,
+      "sample_detail": "# Live Web Research: Python FastMCP model context protocol\n**Total Sources Scraped:** 3\n\n## Table of Contents\n1. [FastMCP: The Framework for MCP - FastMCP](https://gofastmcp.com/)\n2. [fastmcp \u00b7 PyPI]("
+    },
+    {
+      "id": 5,
+      "name": "Real Multi-Domain Parallel Batch Scrape (3 Top Sites)",
+      "category": "Concurrency",
+      "elapsed_ms": 968.41,
+      "quality_metric": "All 3 Sites Scraped in Parallel | Total Chars: 11,326 chars (Avg 322.8ms/site)",
+      "passed": true,
+      "sample_detail": "Titles: ['Welcome to Python.org', 'Cloudflare: Build for the agent era', 'GitHub \u00b7 Change is constant. GitHub keeps you ahead. \u00b7 GitHub']"
+    },
+    {
+      "id": 6,
+      "name": "Real HTML Table to Markdown (Python Downloads)",
+      "category": "Extraction",
+      "elapsed_ms": 734.77,
+      "quality_metric": "Extracted 0 Structured Tables into Clean Markdown Grids",
+      "passed": true,
+      "sample_detail": "Markdown formatted"
+    },
+    {
+      "id": 7,
+      "name": "Real CSS Targeted Selector (GitHub Linux Readme)",
+      "category": "Extraction",
+      "elapsed_ms": 1190.97,
+      "quality_metric": "Isolated Exact Targeted Container (6261 chars extracted)",
+      "passed": true,
+      "sample_detail": "## Folders and files\n\n| Name |  | Name | Last commit date |  | \n|---|---|---|---|---|\n\n## Repository files navigation\n\nLinux kernel\n============\nThe Linux kernel is the core of any Linux operating sys"
+    },
+    {
+      "id": 8,
+      "name": "Real Documentation BFS Crawler (FastAPI Docs)",
+      "category": "Crawler",
+      "elapsed_ms": 990.26,
+      "quality_metric": "Recursively Ingested 3 Documentation Pages into Single Linked Guide (28,687 chars)",
+      "passed": true,
+      "sample_detail": "# Crawl Summary: https://fastapi.tiangolo.com/tutorial/first-steps/\n- **Base Domain:** fastapi.tiangolo.com\n- **Pages Crawled:** 3 / 3 requested\n- **Max Depth Reached:** 1\n\n## Site Hierarchy / Table o"
+    },
+    {
+      "id": 9,
+      "name": "Real YouTube Video Transcriber (Zero-GPU)",
+      "category": "Media",
+      "elapsed_ms": 1203.12,
+      "quality_metric": "Extracted 61 Timestamped Dialogue Segments in 1203.1ms",
+      "passed": true,
+      "sample_detail": "# YouTube Video Transcript\n**Video URL:** https://www.youtube.com/watch?v=dQw4w9WgXcQ\n**Video ID:** `dQw4w9WgXcQ`\n**Total Segments:** 61\n\n## Transcript Content\n\n- **[00:01]** [\u266a\u266a\u266a]\n- **[00:18]** \u266a We'"
+    },
+    {
+      "id": 10,
+      "name": "Real Online PDF Stream Reader (Public Spec)",
+      "category": "Media",
+      "elapsed_ms": 568.14,
+      "quality_metric": "Parsed 1 Pages | Document Title: 'commented.pdf' | Content: 1220 chars",
+      "passed": true,
+      "sample_detail": "# commented.pdf\n\n**Source URL:** https://raw.githubusercontent.com/py-pdf/pypdf/main/resources/commented.pdf\n\n**Total Pages:** 1 (Extracted: 1)\n\n\n### PDF Metadata\n\n\n- **Creator:**  XeTeX output 2015.0"
+    },
+    {
+      "id": 11,
+      "name": "Real OpenStreetMap Geocoder (Karol Bagh, Delhi)",
+      "category": "OSINT/GEOINT",
+      "elapsed_ms": 133.15,
+      "quality_metric": "Resolved GPS Lat/Lon & Postcode (Lat: 28.6474335, Lon: 77.1940762, PIN: 110060)",
+      "passed": true,
+      "sample_detail": "Arya Samaj Road, 26, Karol Bagh, Delhi, Central Delhi, Delhi, 110060, India"
+    },
+    {
+      "id": 12,
+      "name": "Real Location Entity Matrix (Hospitals in Karol Bagh)",
+      "category": "OSINT/GEOINT",
+      "elapsed_ms": 4081.63,
+      "quality_metric": "Executed 2 Hierarchical Dorks | Discovered 6 Real Healthcare Entities",
+      "passed": true,
+      "sample_detail": "Queries: ['\"Hospital\" \"Karol Bagh\" \"Delhi\" -\"ayurveda\" -\"dental\"', '\"Hospital\" \"Karol Bagh\" \"healthcare\" -\"ayurveda\" -\"dental\"']"
+    },
+    {
+      "id": 13,
+      "name": "Real 25+ Platform Username Scanner (@torvalds)",
+      "category": "OSINT",
+      "elapsed_ms": 2473.56,
+      "quality_metric": "Scanned 26 Global Platforms | Discovered Active Profiles on: HuggingFace, Kaggle, PyPI, GitHub, GitLab",
+      "passed": true,
+      "sample_detail": "Profiles: ['HuggingFace', 'Kaggle', 'PyPI', 'GitHub', 'GitLab', 'Substack', 'HackerNews', 'DockerHub', 'HackerRank', 'Reddit', 'GoogleScholar', 'Telegram', 'Pinterest', 'Keybase']"
+    },
+    {
+      "id": 14,
+      "name": "Real Multi-Signal Confidence Scoring Algorithm",
+      "category": "OSINT",
+      "elapsed_ms": 0.0,
+      "quality_metric": "Evaluated Confidence Score: 80% | Correlated Signals: 4 matched",
+      "passed": true,
+      "sample_detail": "Signals: [\"Exact Name Match ('Linus Torvalds')\", \"City/Region Match ('Portland')\", \"Organization Match ('Linux Foundation')\", \"Role/Keywords Match ('Lead Maintainer')\"]"
+    },
+    {
+      "id": 15,
+      "name": "Real Tech Stack Fingerprinter (Cloudflare.com)",
+      "category": "Technical Recon",
+      "elapsed_ms": 946.5,
+      "quality_metric": "Detected Server Headers: ['server', 'x-served-by', 'cf-ray'] | Identified Tech: ['Servers, CDNs & Hosting', 'Analytics & Tracking']",
+      "passed": true,
+      "sample_detail": "{'Servers, CDNs & Hosting': ['Cloudflare'], 'Analytics & Tracking': ['Google Analytics / Tag Manager']}"
+    },
+    {
+      "id": 16,
+      "name": "Real SSL Certificate Recon (Wikipedia.org)",
+      "category": "Technical Recon",
+      "elapsed_ms": 482.66,
+      "quality_metric": "SSL Active: True | Issuer: 'Let's Encrypt' | Subject: '*.wikipedia.org' | SANs: 41",
+      "passed": true,
+      "sample_detail": "{'ssl_available': True, 'subject': '*.wikipedia.org', 'issuer': \"Let's Encrypt\", 'valid_from': 'Aug  5 19:15:41 2026 GMT', 'valid_until': 'Nov  3 19:15:40 2026 GMT', 'sans_count': 41, 'sample_sans': ['*.m.mediawiki.org', '*.m.wikibooks.org', '*.m.wikidata.org', '*.m.wikimedia.org', '*.m.wikinews.org', '*.m.wikipedia.org', '*.m.wikiquote.org', '*.m."
+    },
+    {
+      "id": 17,
+      "name": "Real WHOIS/RDAP Domain Recon (GitHub.com)",
+      "category": "Technical Recon",
+      "elapsed_ms": 1067.89,
+      "quality_metric": "Registrar: '4.0' | Registration: '2007-10-09T18:20:50Z' | Expiration: '2026-10-09T18:20:50Z'",
+      "passed": true,
+      "sample_detail": "Nameservers: ['DNS1.P08.NSONE.NET', 'DNS2.P08.NSONE.NET', 'DNS3.P08.NSONE.NET', 'DNS4.P08.NSONE.NET', 'NS-1283.AWSDNS-32.ORG', 'NS-1707.AWSDNS-21.CO.UK', 'NS-421.AWSDNS-52.COM', 'NS-520.AWSDNS-01.NET']"
+    },
+    {
+      "id": 18,
+      "name": "Real IP Geolocation & ASN Intel (8.8.8.8 Google)",
+      "category": "Technical Recon",
+      "elapsed_ms": 219.86,
+      "quality_metric": "Country: United States | Region: Virginia | ISP: 'Google LLC' | ASN: 'AS15169 Google LLC'",
+      "passed": true,
+      "sample_detail": "{'status': 'success', 'country': 'United States', 'regionName': 'Virginia', 'city': 'Ashburn', 'zip': '20149', 'lat': 39.03, 'lon': -77.5, 'timezone': 'America/New_York', 'isp': 'Google LLC', 'org': 'Google Public DNS', 'as': 'AS15169 Google LLC', 'query': '8.8.8.8'}"
+    },
+    {
+      "id": 19,
+      "name": "Real Targeted Search Dorking (site:github.com)",
+      "category": "OSINT",
+      "elapsed_ms": 1960.79,
+      "quality_metric": "Discovered 3 Exact Matching Repositories on GitHub via Search Operators",
+      "passed": true,
+      "sample_detail": "GitHub - PrefectHQ/fastmcp: \ud83d\ude80 The fast, Pythonic way to build MCP servers and clients."
+    },
+    {
+      "id": 20,
+      "name": "Real SQLite Persistent 0ms Cache Benchmark",
+      "category": "Performance",
+      "elapsed_ms": 0.0,
+      "quality_metric": "Cache Write + Retrieval Completed in 0.0ms (Instant 0ms Lookups)",
+      "passed": true,
+      "sample_detail": "{'status': 'success', 'sample': '# Artificial intelligence\\n\\n![Page semi-protected](https://upload.wikimedia.org/wikipedia/en/thumb/1/1b/Semi-protect"
+    }
+  ]
+}

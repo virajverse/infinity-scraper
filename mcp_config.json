@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "infinity-scraper": {
+      "command": "python",
+      "args": [
+        "-m",
+        "infinity_scraper.server"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "src"
+      }
+    }
+  }
+}
