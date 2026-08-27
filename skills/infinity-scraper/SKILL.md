@@ -7,39 +7,41 @@ description: >-
   enumerate subdomains, and execute multi-signal OSINT & GEOINT location intelligence.
 ---
 
-# InfinityScrape MCP: Master Autonomous AI Agent Playbook (23 Tools)
+# ⚡ InfinityScrape MCP: Master Autonomous AI Agent Playbook (25 Tools)
 
-This skill empowers any AI model (**Claude 3.7, GPT-4o, Llama 3.3, DeepSeek-R1/V3, Qwen, Antigravity AI, Open WebUI, LM Studio, Cursor**) to **dynamically reason, self-assemble parameters, multi-tool chain, and autonomously adapt** to any scraping or intelligence challenge on the internet.
+This skill empowers any AI model (**Claude 3.7, GPT-4o, DeepSeek-R1/V3, Llama 3.3, Qwen, Antigravity AI, Open WebUI**) with **god-tier data extraction, web intelligence, and multi-signal OSINT & GEOINT reconnaissance superpowers**.
+
+Every capability is engineered for **autonomous execution, zero-hallucination parameter assembly, multi-tool chaining, and dynamic self-healing**.
 
 ---
 
 ## 🧠 The Agent's 4-Step Cognitive Loop
 
 ```
-  ┌──────────────────────────────────────────────┐
-  │ 1. SENSE: Deconstruct Intent & Extract Clues │
-  └──────────────────────┬───────────────────────┘
-                         ▼
-  ┌──────────────────────────────────────────────┐
-  │ 2. PLAN: Select Optimal Tool or Tool-Chain   │
-  └──────────────────────┬───────────────────────┘
-                         ▼
-  ┌──────────────────────────────────────────────┐
-  │ 3. ACT: Self-Assemble Parameters Dynamically │
-  └──────────────────────┬───────────────────────┘
-                         ▼
-  ┌──────────────────────────────────────────────┐
-  │ 4. ADAPT: Evaluate Result & Escalate/Pivot   │
-  └──────────────────────────────────────────────┘
+  ┌────────────────────────────────────────────────────────┐
+  │ 1. SENSE: Deconstruct User Intent & Target Footprint    │
+  └───────────────────────────┬────────────────────────────┘
+                              ▼
+  ┌────────────────────────────────────────────────────────┐
+  │ 2. PLAN: Select Optimal Tool or Multi-Tool Recipe      │
+  └───────────────────────────┬────────────────────────────┘
+                              ▼
+  ┌────────────────────────────────────────────────────────┐
+  │ 3. ACT: Self-Assemble Parameters & Execute with TLS    │
+  └───────────────────────────┬────────────────────────────┘
+                              ▼
+  ┌────────────────────────────────────────────────────────┐
+  │ 4. ADAPT & CHAIN: Synthesize Intel / Pass to Pipeline   │
+  └────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🧭 Dynamic Intent-to-Tool Mapping (23 Tools)
+## 🧭 Dynamic Intent-to-Tool Matrix (25 Tools)
 
-| Intent / Trigger in User Request | Primary Tool to Invoke | Parameter Strategy |
+| Intent / Trigger in User Request | Primary Tool | Parameter Strategy |
 | :--- | :--- | :--- |
-| **Specific Webpage / Article URL** | `scrape_url` | `url`, `engine='auto'`, `strip_ads=True`. |
+| **Specific Webpage / Clean Markdown** | `scrape_url` | `url`, `engine='auto'`, `strip_ads=True`. |
 | **Dynamic SPA / Infinite Feed / React App** | `scrape_dynamic` | `url`, `scroll_depth=3`, `wait_seconds=2.0`. |
 | **YouTube Video / Podcast / Shorts** | `get_youtube_transcript` | `url`, `with_timestamps=True` (<300ms, Zero GPU). |
 | **Online PDF Document / Whitepaper** | `extract_pdf` | `url`, `max_pages=20` (Streams bytes via TLS). |
@@ -58,38 +60,63 @@ This skill empowers any AI model (**Claude 3.7, GPT-4o, Llama 3.3, DeepSeek-R1/V
 | **DNS Infrastructure & Mail Server Audit** | `osint_dns_audit` | `domain="openai.com"`. |
 | **Image EXIF Metadata & GPS Geotags** | `extract_image_exif` | `image_url` (Extracts camera specs & OpenStreetMap link). |
 | **Reddit Discussion Post & Comments Tree** | `extract_reddit_thread_tool` | `url`, `max_comments=25`. |
-| **RSS / Substack / Blog Feed Monitor** | `extract_rss_feed_tool` | `feed_url`, `max_items=10`. |
-| **Website Tech Stack (React/Vue/CMS/CDN)** | `osint_tech_stack` | `url="https://site.com"`. |
-| **SSL/TLS Certificate Validity & SANs** | `osint_domain_recon` | `domain_or_url`. |
-| **Public IP Geolocation & ASN Lookup** | `osint_ip_lookup` | `ip_or_host`. |
-| **Large Scraped Document Token Optimization** | `optimize_rag_chunks` | `text_or_markdown`, `max_chunk_chars=2000`. |
+| **RSS / Atom Feed News Monitor** | `extract_rss_tool` | `feed_url` (Parses articles, timestamps, summaries). |
+| **XML Sitemap Discovery & URL Discovery** | `extract_sitemap_tool` | `url` (Extracts all indexed URLs for crawling). |
 
 ---
 
-## 🔄 Advanced Multi-Tool Chaining Patterns
+## ⚡ God-Tier Multi-Tool Chaining Recipes
 
-### Pattern A: "Competitor Infrastructure & Security Audit"
-1. `osint_subdomain_enumeration(domain="company.com")` ➔ Discovers `api.company.com`, `app.company.com`.
-2. `osint_tech_stack(url="https://app.company.com")` ➔ Identifies Next.js, Cloudflare, React.
-3. `osint_domain_recon(domain_or_url="company.com")` ➔ Audits SSL certificate expiry and RDAP registrar.
+### 1. The Autonomous Content-to-Blog Synthesis Pipeline
+```
+[User: "Write an in-depth article about this YouTube video / new tech release"]
+   │
+   ├──> Step 1: Call `get_youtube_transcript(url=...)` OR `scrape_url(url=...)`
+   │    Extract key concepts, timestamps, and core technical substance.
+   │
+   ├──> Step 2: Call `search_and_scrape(query="[Tech] benchmarks 2026", max_results=3)`
+   │    Gather industry benchmarks, competitive comparisons, and corroborating citations.
+   │
+   └──> Step 3: Pass synthesized 15/15 SEO content directly to `taliyo-blog-engine`!
+        Call `create_blog_post(...)` to publish directly to https://taliyotechnologies.com/blog.
+```
 
-### Pattern B: "Investigative Historical Time-Travel"
-1. User gives a broken/deleted link.
-2. `osint_wayback_time_machine(url="https://site.com/deleted-article", list_snapshots=True)` ➔ Finds active dates.
-3. `osint_wayback_time_machine(url="https://site.com/deleted-article", timestamp="20220101")` ➔ Recovers original Markdown text.
+### 2. The Comprehensive Target OSINT Dossier Recipe
+```
+[User: "Investigate company or person: Viraj / Taliyo Technologies"]
+   │
+   ├──> Step 1: Call `osint_subdomain_enumeration(domain="taliyotechnologies.com")`
+   │    Enumerate all active staging, admin, and API infrastructure.
+   │
+   ├──> Step 2: Call `osint_dns_audit(domain="taliyotechnologies.com")`
+   │    Map Cloudflare CDN, MX mail gateways, and SPF/DKIM records.
+   │
+   ├──> Step 3: Call `osint_deep_public_recon(name="Viraj", organization="Taliyo Technologies")`
+   │    Cross-correlate GitHub, LinkedIn, patents, registries, and corporate filings.
+   │
+   └──> Step 4: Synthesize structured Intelligence Dossier with zero guesswork.
+```
 
-### Pattern C: "Social Intelligence & Sentiment Extraction"
-1. `search_web(query="DeepSeek-V3 review site:reddit.com")` ➔ Finds top Reddit discussion link.
-2. `extract_reddit_thread_tool(url="https://reddit.com/r/...")` ➔ Ingests structured dialogue and top comments.
-
-### Pattern D: "Image Geolocation & EXIF Verification"
-1. `extract_image_exif(image_url="https://target.com/photo.jpg")` ➔ Extracts GPS Lat/Lon.
-2. If GPS found: `osint_geoint_lookup(location_query="<lat>, <lon>")` ➔ Resolves exact street name, suburb, and PIN code!
+### 3. The Forensic Wayback Time-Machine Recipe
+```
+[User: "Check what changed on this website or recover a deleted page"]
+   │
+   ├──> Step 1: Call `osint_wayback_time_machine(url=..., timestamp="2024")`
+   │    Retrieve exact snapshot from historical web archive.
+   │
+   ├──> Step 2: Call `scrape_url(url=...)` to get live current state.
+   │
+   └──> Step 3: Output side-by-side diff highlighting modified text, removed staff, or altered pricing.
+```
 
 ---
 
-## 🛡️ Best Practices & Execution Guardrails
+## 🛡️ Autonomous Failover & Anti-Blocking Heuristics
 
-1. **Context Window Efficiency:** Always prefer clean Markdown over raw HTML. Use `optimize_rag_chunks` when dealing with massive >100K token documents.
-2. **Attribution & Citations:** Always link source URLs as `[Title](URL)` in your final responses.
-3. **Negative Dorking:** In OSINT recon, always specify `exclude_terms` for common names to avoid celebrity or spam pollution.
+1. **Static vs Dynamic Fallback:**
+   * If `scrape_url` fails due to client-side rendering (SPA, Next.js hydration, blank body), **immediately auto-escalate** to `scrape_dynamic(url, wait_seconds=3.0)`.
+2. **Rate-Limit & Block Protection:**
+   * InfinityScrape uses randomized TLS client fingerprints and auto-rotating User-Agents.
+   * If a site returns HTTP 403 / 429, call `osint_wayback_time_machine(url)` as an immediate fallback to read the cached public version without getting blocked!
+3. **Zero Hallucination Standard:**
+   * Never fabricate transcript contents or quotes. If `get_youtube_transcript` returns no captions, explain cleanly that captions are disabled for that video and offer `search_and_scrape` as an alternative.

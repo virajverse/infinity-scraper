@@ -176,6 +176,16 @@ In Cursor Settings ➔ **Features ➔ MCP Servers ➔ Add New MCP Server**:
 - **Type:** `command`
 - **Command:** `C:/path/to/infinity-scraper/.venv/Scripts/python.exe -m infinity_scraper.server`
 
+### 4. Open WebUI (FastAPI OpenAPI Bridge)
+Run the dedicated OpenAPI bridge server on Port `8000`:
+```powershell
+python openapi_bridge.py
+```
+Then in Open WebUI:
+1. Open **Admin Settings ➔ Tools ➔ + (Add Tool Server)**.
+2. Enter Tool Server URL: `http://127.0.0.1:8000`.
+3. Click **Save**. All 25 scraper and OSINT tools are instantly imported into your Open WebUI models!
+
 ---
 
 ## 🛠️ Complete 23-Tool Reference Guide

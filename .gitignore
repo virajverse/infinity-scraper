@@ -32,6 +32,11 @@ venv/
 ENV/
 env/
 
+# Environment Variables & Secrets
+.env
+*.env
+.env.*
+
 # SQLite Caches
 .cache/
 *.db
