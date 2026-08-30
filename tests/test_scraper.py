@@ -22,6 +22,9 @@ from infinity_scraper.osint.subdomains import enumerate_subdomains
 from infinity_scraper.osint.wayback import fetch_wayback_snapshots
 
 
+import pytest
+
+@pytest.mark.asyncio
 async def test_fast_scrape_httpbin():
     res = await fetch_url_fast("https://httpbin.org/html")
     assert res.status_code == 200
@@ -29,6 +32,7 @@ async def test_fast_scrape_httpbin():
     print("[PASS] Fast scrape test passed!")
 
 
+@pytest.mark.asyncio
 async def test_browser_scrape_example():
     res = await fetch_url_browser("https://example.com", wait_seconds=0.5)
     assert res.status_code == 200
@@ -65,6 +69,7 @@ def test_html_table_and_markdown_extractor():
     print("[PASS] Extractor and table conversion test passed!")
 
 
+@pytest.mark.asyncio
 async def test_deep_crawler():
     res = await crawl_site("https://example.com", max_pages=2, max_depth=1)
     assert res["total_crawled"] >= 1
@@ -72,6 +77,7 @@ async def test_deep_crawler():
     print(f"[PASS] Deep crawler test passed with {res['total_crawled']} pages!")
 
 
+@pytest.mark.asyncio
 async def test_youtube_transcription():
     res = await fetch_youtube_transcript("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
     assert res.get("total_segments", 0) > 0
@@ -79,6 +85,7 @@ async def test_youtube_transcription():
     print(f"[PASS] YouTube zero-GPU transcript test passed with {res['total_segments']} segments!")
 
 
+@pytest.mark.asyncio
 async def test_osint_tools():
     ssl_info = get_ssl_cert_info("github.com")
     assert ssl_info.get("ssl_available") is True
@@ -91,6 +98,7 @@ async def test_osint_tools():
     print(f"[PASS] OSINT tools passed (SSL valid, IP intel ok, User presence ok)!")
 
 
+@pytest.mark.asyncio
 async def test_next_gen_tools():
     # 1. RAG Chunker
     sample_text = "# Section 1\nThis is a long introductory text.\n\n## Section 2\nSecond sub-topic with details."
@@ -107,6 +115,7 @@ async def test_next_gen_tools():
     sub_data = await enumerate_subdomains("github.com", limit=5)
     assert len(sub_data.get("subdomains", [])) >= 1
     print(f"[PASS] Subdomain Recon found {len(sub_data['subdomains'])} subdomains for github.com!")
+
 
 
 if __name__ == "__main__":

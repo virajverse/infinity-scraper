@@ -18,7 +18,75 @@ from infinity_scraper.engines.fast import fetch_url_fast
 from infinity_scraper.engines.browser import fetch_url_browser
 from infinity_scraper.extractors.content import ExtractionResult
 
-logger = logging.getLogger(__name__)
+import httpx
+from bs4 import BeautifulSoup
+from urllib.parse import quote_plus, unquote
+
+def _search_ddg_html_fallback(query: str, max_results: int = 5) -> List[Dict[str, Any]]:
+    """Fallback search using DuckDuckGo HTML Lite when API rate-limits."""
+    results = []
+    try:
+        url = f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        }
+        with httpx.Client(timeout=8.0, follow_redirects=True) as client:
+            resp = client.post(url, data={"q": query}, headers=headers)
+            if resp.status_code == 200:
+                soup = BeautifulSoup(resp.text, "html.parser")
+                for item in soup.select(".result"):
+                    title_elem = item.select_one(".result__title a")
+                    snippet_elem = item.select_one(".result__snippet")
+                    if title_elem and title_elem.get("href"):
+                        raw_href = title_elem.get("href")
+                        # Extract real URL from /l/?uddg=...
+                        real_url = raw_href
+                        if "uddg=" in raw_href:
+                            try:
+                                real_url = unquote(raw_href.split("uddg=")[1].split("&")[0])
+                            except Exception:
+                                real_url = raw_href
+                        results.append({
+                            "title": title_elem.get_text(strip=True),
+                            "url": real_url,
+                            "snippet": snippet_elem.get_text(strip=True) if snippet_elem else "",
+                            "source": "DuckDuckGo HTML",
+                        })
+                        if len(results) >= max_results:
+                            break
+    except Exception as e:
+        logger.warning(f"DDG HTML fallback error: {e}")
+    return results
+
+
+def _search_bing_fallback(query: str, max_results: int = 5) -> List[Dict[str, Any]]:
+    """Fallback search using Bing HTML scraper."""
+    results = []
+    try:
+        url = f"https://www.bing.com/search?q={quote_plus(query)}"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0",
+        }
+        with httpx.Client(timeout=8.0, follow_redirects=True) as client:
+            resp = client.get(url, headers=headers)
+            if resp.status_code == 200:
+                soup = BeautifulSoup(resp.text, "html.parser")
+                for li in soup.select("li.b_algo"):
+                    title_elem = li.select_one("h2 a")
+                    snippet_elem = li.select_one(".b_caption p, .b_snippet")
+                    if title_elem and title_elem.get("href"):
+                        results.append({
+                            "title": title_elem.get_text(strip=True),
+                            "url": title_elem.get("href"),
+                            "snippet": snippet_elem.get_text(strip=True) if snippet_elem else "",
+                            "source": "Bing",
+                        })
+                        if len(results) >= max_results:
+                            break
+    except Exception as e:
+        logger.warning(f"Bing search fallback error: {e}")
+    return results
 
 
 def search_web_ddg(
@@ -30,6 +98,7 @@ def search_web_ddg(
     search_type: str = "text",
 ) -> List[Dict[str, Any]]:
     results = []
+    # Tier 1: DDGS API
     if DDGS:
         try:
             with DDGS() as ddgs:
@@ -59,9 +128,18 @@ def search_web_ddg(
                         "source": item.get("source", ""),
                     })
         except Exception as exc:
-            logger.error(f"DuckDuckGo search error for '{query}': {exc}")
+            logger.warning(f"DuckDuckGo API search rate-limited / error for '{query}': {exc}. Switching to fallback engines...")
+
+    # Tier 2: DuckDuckGo HTML Lite Fallback
+    if not results:
+        results = _search_ddg_html_fallback(query=query, max_results=max_results)
+
+    # Tier 3: Bing HTML Fallback
+    if not results:
+        results = _search_bing_fallback(query=query, max_results=max_results)
 
     return results
+
 
 
 async def search_and_scrape_all(

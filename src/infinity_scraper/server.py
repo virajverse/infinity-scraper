@@ -211,16 +211,54 @@ async def extract_schema(
     soup = BeautifulSoup(res.raw_html, "html.parser")
     extracted_data: Dict[str, Any] = {"_url": url, "_status": res.status_code}
 
+    # Extract any embedded JSON-LD schema on page
+    json_ld_data = []
+    for script in soup.find_all("script", type="application/ld+json"):
+        try:
+            parsed = json.loads(script.string)
+            if isinstance(parsed, list):
+                json_ld_data.extend(parsed)
+            elif isinstance(parsed, dict):
+                json_ld_data.append(parsed)
+        except Exception:
+            pass
+
     for field_name, selector in schema.items():
-        matches = soup.select(selector)
-        if not matches:
-            extracted_data[field_name] = None
-        elif len(matches) == 1:
-            extracted_data[field_name] = matches[0].get_text(strip=True)
+        matches = []
+        try:
+            matches = soup.select(selector)
+        except Exception:
+            pass
+
+        if matches:
+            if len(matches) == 1:
+                extracted_data[field_name] = matches[0].get_text(strip=True)
+            else:
+                extracted_data[field_name] = [m.get_text(strip=True) for m in matches]
         else:
-            extracted_data[field_name] = [m.get_text(strip=True) for m in matches]
+            # Semantic Fallback from Meta & JSON-LD
+            val = None
+            f_lower = field_name.lower()
+            
+            # 1. Meta tag check
+            meta_match = soup.find("meta", attrs={"name": f_lower}) or soup.find("meta", attrs={"property": f"og:{f_lower}"}) or soup.find("meta", attrs={"property": f_lower})
+            if meta_match and meta_match.get("content"):
+                val = meta_match.get("content").strip()
+
+            # 2. JSON-LD search
+            if not val and json_ld_data:
+                for j in json_ld_data:
+                    for k, v in j.items():
+                        if k.lower() == f_lower:
+                            val = v
+                            break
+                    if val:
+                        break
+
+            extracted_data[field_name] = val
 
     return json.dumps(extracted_data, indent=2, ensure_ascii=False)
+
 
 
 @mcp.tool()

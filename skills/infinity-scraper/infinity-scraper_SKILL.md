@@ -1,0 +1,118 @@
+---
+name: infinity-scraper
+description: >-
+  World-Class Autonomous AI Playbook & Cognitive Reasoning Framework for InfinityScrape MCP Suite.
+  Enables any AI Agent to scrape web content with high-speed Singleton BrowserPool (~1.8s), render dynamic SPAs with Playwright,
+  bypass Cloudflare Turnstile, execute 3-tier multi-engine search failovers (Anti-429), crawl documentation trees,
+  transcribe YouTube videos (Zero-GPU), extract PDF text, parse Reddit discussions & RSS feeds, extract image EXIF GPS geotags,
+  time-travel via Wayback Machine, enumerate subdomains, fingerprint tech stacks, and execute multi-signal OSINT & GEOINT location intelligence.
+---
+
+# ⚡ InfinityScrape MCP: Master Autonomous AI Agent Playbook (25 Tools)
+
+This skill empowers any AI model (**Claude 3.7, GPT-4o, DeepSeek-R1/V3, Llama 3.3, Qwen, Antigravity IDE, Open WebUI**) with **god-tier data extraction, web intelligence, and multi-signal OSINT & GEOINT reconnaissance superpowers** on **Port 8000** (`http://127.0.0.1:8000/openapi.json` / `https://mcp1.taliyotechnologies.com`).
+
+Every capability is engineered for **high performance (Singleton BrowserPool ~1.8s), 3-tier search failover resilience, zero-hallucination parameter assembly, multi-tool chaining, and dynamic self-healing**.
+
+---
+
+## 🧠 LLM Quick-Start & Cognitive Decision Flow
+
+```
+                     ┌───────────────────────────────────────────────┐
+                     │          Research / Extraction Request        │
+                     └───────────────────────┬───────────────────────┘
+                                             │
+      ┌──────────────────┬───────────────────┼───────────────────┬──────────────────┐
+      ▼                  ▼                   ▼                   ▼                  ▼
+[Single Webpage]    [Live Search]      [Media / Video]     [Company / Domain]   [Social / RSS]
+      │                  │                   │                   │                  │
+`scrape_url(url)`  `search_and_scrape`  `get_youtube_transcript` `osint_domain_recon` `extract_reddit_thread`
+      │                  │                   │                   │                  │
+(If empty SPA ➔)   (3-Tier Failover:   (Zero GPU, <300ms   `osint_tech_stack`  `extract_rss_feed`
+`scrape_dynamic`   DDG + HTML + Bing)  captions)           `osint_subdomains`
+```
+
+---
+
+## 🧭 Dynamic Intent-to-Tool Matrix (All 25 Tools)
+
+| Intent / Trigger in User Request | Primary Tool | Parameter Strategy |
+| :--- | :--- | :--- |
+| **Specific Webpage / Clean Markdown** | `scrape_url` | `url`, `engine='auto'`, `strip_ads=True`, `max_chars=50000`. |
+| **Live Internet Search / Anti-429** | `search_web` | `query`, `max_results=5`, `search_type='text'` (Auto 3-tier failover). |
+| **Live Autonomous Web Research Report** | `search_and_scrape` | `query`, `max_results=4`, `use_browser=False`. |
+| **Dynamic SPA / React / Cloudflare** | `scrape_dynamic` | `url`, `scroll_depth=2`, `wait_seconds=2.0` (Turnstile auto-bypass). |
+| **Zero-Selector / Semantic Schema** | `extract_schema` | `url`, `schema={"title": "h1", "price": "price"}` (Auto JSON-LD & meta). |
+| **Documentation Tree / Site Crawler** | `deep_crawl` | `start_url`, `path_prefix="/docs/"`, `max_depth=2`, `max_pages=5`. |
+| **Structured Tables & JSON-LD Metadata** | `extract_structured` | `url`, `extract_tables=True`, `extract_metadata=True`. |
+| **Batch Multi-URL Scraping** | `scrape_batch` | `urls=[...]`, `concurrency=4`, `use_browser=False`. |
+| **Online PDF Document Parsing** | `extract_pdf` | `url`, `max_pages=20` (Streams bytes via TLS). |
+| **YouTube Video / Podcast Transcription** | `get_youtube_transcript` | `url`, `with_timestamps=True` (<300ms, Zero GPU). |
+| **Person / Entity Public Recon Dossier** | `osint_deep_public_recon` | `name`, `location`, `organization`, `role_or_keywords`, `exclude_terms`. |
+| **Address / Landmark / Street Geocoding** | `osint_geoint_lookup` | `location_query="Karol Bagh, New Delhi"`, `limit=3`. |
+| **Location Entity Hierarchy Dorking** | `osint_location_entity_search` | `entity_name`, `city`, `street_or_landmark`, `postal_code`, `exclude_terms`. |
+| **Domain SSL, WHOIS & RDAP Intel** | `osint_domain_recon` | `domain_or_url="target.com"`. |
+| **Website Tech Stack Fingerprinting** | `osint_tech_stack` | `url="https://target.com"`. |
+| **IP Geolocation, ISP & ASN Intel** | `osint_ip_lookup` | `ip_or_host="1.1.1.1"` or `"target.com"`. |
+| **Global Handle / Alias Footprint Scan** | `osint_username_check` | `username` (Scans 25+ global developer & creator platforms). |
+| **Precision Dorking with Boolean Filters**| `osint_search` | `query`, `site='gov.in'`, `filetype='pdf'`, `in_title=''`, `exclude_terms`. |
+| **Deleted / Historical Page Snapshot** | `osint_wayback_time_machine` | `url`, `timestamp=""`, `list_snapshots=False` (HTTPS CDX). |
+| **Subdomain Enumeration (API/Staging)** | `osint_subdomain_enumeration` | `domain="target.com"`, `limit=50` (Cert Transparency crt.sh). |
+| **DNS Infrastructure & Mail Server Audit**| `osint_dns_audit` | `domain="target.com"`. |
+| **Image EXIF Metadata & GPS Geotags** | `extract_image_exif` | `image_url` (Camera specs, timestamp, GPS map link). |
+| **Reddit Discussion Post & Comments Tree** | `extract_reddit_thread_tool` | `url`, `max_comments=25`. |
+| **RSS / Atom Feed News Monitor** | `extract_rss_feed_tool` | `feed_url`, `max_items=10`. |
+| **Semantic RAG Chunker & Token Optimizer** | `optimize_rag_chunks` | `text_or_markdown`, `max_chunk_chars=2000`. |
+
+---
+
+## 🚀 Engine Performance & Anti-Bot Architecture
+
+1. **Singleton `BrowserPool` (~1.8s SPA Renders)**:
+   - Uses a persistent Playwright Chromium process with ephemeral context isolation.
+   - Eliminates process cold-start latency and prevents memory leaks.
+2. **3-Tier Multi-Engine Search Failover**:
+   - `DuckDuckGo API` ➡️ `DuckDuckGo HTML Lite` ➡️ `Bing HTML Fallback`.
+   - Never fails on rate-limits, Captchas, or DNS anomalies.
+3. **Cloudflare Turnstile & Interstitial Auto-Solver**:
+   - Automatically detects challenge iframes and dispatches simulated user coordinates to bypass interstitials.
+4. **Zero-Selector Semantic Schema Fallback**:
+   - `extract_schema` automatically inspects `<script type="application/ld+json">` and OpenGraph meta tags when targeted CSS selectors are missing or randomized.
+
+---
+
+## ⚡ Multi-Tool Chaining Recipes
+
+### 1. Autonomous Content-to-Blog Synthesis Pipeline
+```
+[User: "Write an in-depth article about this YouTube video / new tech release"]
+   │
+   ├──> Step 1: Call `get_youtube_transcript(url=...)` OR `scrape_url(url=...)`
+   │    Extract key concepts, timestamps, and core technical substance.
+   │
+   ├──> Step 2: Call `search_and_scrape(query="[Tech] benchmarks 2026", max_results=3)`
+   │    Gather industry benchmarks, competitive comparisons, and corroborating citations.
+   │
+   └──> Step 3: Pass synthesized 15/15 SEO content directly to `taliyo-admin-mcp`!
+        Call `create_blog_post(...)` to publish directly to https://taliyotechnologies.com/blog.
+```
+
+### 2. The Comprehensive Target OSINT Dossier Recipe
+```
+[User: "Investigate company or person: Viraj / Taliyo Technologies"]
+   │
+   ├──> Step 1: Call `osint_subdomain_enumeration(domain="taliyotechnologies.com")`
+   │    Enumerate all active staging, admin, and API infrastructure.
+   │
+   ├──> Step 2: Call `osint_dns_audit(domain="taliyotechnologies.com")`
+   │    Map Cloudflare CDN, MX mail gateways, and SPF/DKIM records.
+   │
+   ├──> Step 3: Call `osint_tech_stack(url="https://taliyotechnologies.com")`
+   │    Identify Next.js, Supabase, Tailwind, and hosting edge nodes.
+   │
+   ├──> Step 4: Call `osint_deep_public_recon(name="Viraj", organization="Taliyo Technologies")`
+   │    Cross-correlate GitHub, LinkedIn, patents, registries, and corporate filings.
+   │
+   └──> Step 5: Synthesize structured Intelligence Dossier with zero guesswork.
+```

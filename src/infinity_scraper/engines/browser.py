@@ -1,5 +1,5 @@
 """
-Dynamic Headless Browser Scraping Engine powered by Playwright.
+Dynamic Headless Browser Scraping Engine powered by Playwright with Singleton Pooling & Anti-Detection.
 """
 
 import asyncio
@@ -8,13 +8,14 @@ import logging
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
-from playwright.async_api import async_playwright, Browser, BrowserContext, Page, Route
+from playwright.async_api import async_playwright, Browser, BrowserContext, Page, Route, Playwright
 
 from infinity_scraper.config import (
     AD_AND_POPUP_SELECTORS,
     AD_TRACKING_DOMAINS,
     DEFAULT_TIMEOUT,
     get_random_user_agent,
+    get_rotating_proxy,
 )
 from infinity_scraper.extractors.content import ExtractionResult, parse_html_content
 
@@ -63,6 +64,92 @@ AUTO_DISMISS_COOKIE_JS = """
 })();
 """
 
+AUTO_SOLVE_TURNSTILE_JS = """
+(() => {
+    try {
+        const iframes = Array.from(document.querySelectorAll('iframe'));
+        for (const f of iframes) {
+            const src = (f.getAttribute('src') || '').toLowerCase();
+            const title = (f.getAttribute('title') || '').toLowerCase();
+            if (src.includes('challenges.cloudflare.com') || title.includes('cloudflare') || title.includes('turnstile') || title.includes('challenge')) {
+                try {
+                    const rect = f.getBoundingClientRect();
+                    if (rect.width > 0 && rect.height > 0) {
+                        const evt = new MouseEvent('click', {
+                            bubbles: true,
+                            cancelable: true,
+                            view: window,
+                            clientX: rect.left + rect.width / 2,
+                            clientY: rect.top + rect.height / 2
+                        });
+                        f.dispatchEvent(evt);
+                    }
+                } catch(e) {}
+            }
+        }
+    } catch (e) {}
+})();
+"""
+
+
+class BrowserPool:
+    """
+    High-performance Singleton Browser Pool.
+    Maintains a shared Chromium process while leasing ephemeral isolated contexts.
+    """
+    _instance: Optional["BrowserPool"] = None
+    _lock = asyncio.Lock()
+
+    def __init__(self):
+        self._playwright: Optional[Playwright] = None
+        self._browser: Optional[Browser] = None
+        self._active_contexts: int = 0
+
+    @classmethod
+    async def get_instance(cls) -> "BrowserPool":
+        if cls._instance is None:
+            async with cls._lock:
+                if cls._instance is None:
+                    cls._instance = cls()
+        return cls._instance
+
+    async def get_browser(self, proxy: Optional[str] = None) -> Browser:
+        async with self._lock:
+            # If browser crashed or not started, start it
+            if self._browser is None or not self._browser.is_connected():
+                if self._playwright is None:
+                    self._playwright = await async_playwright().start()
+                
+                proxy_dict = {"server": proxy} if proxy else None
+                self._browser = await self._playwright.chromium.launch(
+                    headless=True,
+                    args=[
+                        "--no-sandbox",
+                        "--disable-setuid-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-blink-features=AutomationControlled",
+                        "--disable-infobars",
+                        "--window-size=1920,1080",
+                    ],
+                    proxy=proxy_dict,
+                )
+            return self._browser
+
+    async def close_all(self):
+        async with self._lock:
+            if self._browser:
+                try:
+                    await self._browser.close()
+                except Exception:
+                    pass
+                self._browser = None
+            if self._playwright:
+                try:
+                    await self._playwright.stop()
+                except Exception:
+                    pass
+                self._playwright = None
+
 
 async def route_ad_blocker(route: Route):
     request = route.request
@@ -95,126 +182,132 @@ async def fetch_url_browser(
     css_selector: Optional[str] = None,
     timeout: int = DEFAULT_TIMEOUT,
     user_agent: Optional[str] = None,
+    cookies: Optional[List[Dict[str, Any]]] = None,
 ) -> ExtractionResult:
     ua = user_agent or get_random_user_agent()
-    proxy_dict = None
-    if proxy:
-        proxy_dict = {"server": proxy}
+    active_proxy = get_rotating_proxy(proxy)
 
-    async with async_playwright() as p:
-        browser: Browser = await p.chromium.launch(
-            headless=True,
-            args=[
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-blink-features=AutomationControlled",
-                "--disable-infobars",
-                "--window-size=1920,1080",
-            ],
-            proxy=proxy_dict,
-        )
+    pool = await BrowserPool.get_instance()
+    browser = await pool.get_browser(active_proxy)
 
-        context: BrowserContext = await browser.new_context(
-            user_agent=ua,
-            viewport={"width": 1920, "height": 1080},
-            device_scale_factor=1,
-            locale="en-US",
-            timezone_id="America/New_York",
-            bypass_csp=True,
-            ignore_https_errors=True,
-        )
+    # Ephemeral isolated context (instant ~50ms creation)
+    context: BrowserContext = await browser.new_context(
+        user_agent=ua,
+        viewport={"width": 1920, "height": 1080},
+        device_scale_factor=1,
+        locale="en-US",
+        timezone_id="America/New_York",
+        bypass_csp=True,
+        ignore_https_errors=True,
+    )
 
-        await context.add_init_script(STEALTH_JS)
-        page: Page = await context.new_page()
-        page.set_default_timeout(timeout * 1000)
-
-        if block_ads:
-            await page.route("**/*", route_ad_blocker)
-
-        js_eval_result = None
-        screenshot_base64 = None
-
+    if cookies:
         try:
+            await context.add_cookies(cookies)
+        except Exception as e:
+            logger.warning(f"Could not inject cookies: {e}")
+
+    await context.add_init_script(STEALTH_JS)
+    page: Page = await context.new_page()
+    page.set_default_timeout(timeout * 1000)
+
+    if block_ads:
+        await page.route("**/*", route_ad_blocker)
+
+    js_eval_result = None
+    screenshot_base64 = None
+
+    try:
+        try:
+            response = await page.goto(url, wait_until="domcontentloaded", timeout=timeout * 1000)
+            status_code = response.status if response else 200
+        except Exception:
+            response = await page.goto(url, wait_until="load", timeout=timeout * 1000)
+            status_code = response.status if response else 200
+
+        # Auto-dismiss Cookie banners
+        try:
+            await page.evaluate(AUTO_DISMISS_COOKIE_JS)
+        except Exception:
+            pass
+
+        # Auto-detect and solve Cloudflare Turnstile iframes
+        try:
+            await page.evaluate(AUTO_SOLVE_TURNSTILE_JS)
+        except Exception:
+            pass
+
+        if click_selector:
             try:
-                response = await page.goto(url, wait_until="domcontentloaded", timeout=timeout * 1000)
-                status_code = response.status if response else 200
-            except Exception:
-                response = await page.goto(url, wait_until="load", timeout=timeout * 1000)
-                status_code = response.status if response else 200
+                await page.wait_for_selector(click_selector, timeout=5000)
+                await page.hover(click_selector)
+                await asyncio.sleep(0.3)
+                await page.click(click_selector)
+                await asyncio.sleep(1.0)
+            except Exception as exc:
+                logger.warning(f"Could not click selector '{click_selector}': {exc}")
 
+        if wait_for_selector:
             try:
-                await page.evaluate(AUTO_DISMISS_COOKIE_JS)
-            except Exception:
-                pass
+                await page.wait_for_selector(wait_for_selector, timeout=timeout * 1000)
+            except Exception as exc:
+                logger.warning(f"Wait for selector '{wait_for_selector}' timed out: {exc}")
 
-            if click_selector:
-                try:
-                    await page.wait_for_selector(click_selector, timeout=5000)
-                    await page.hover(click_selector)
-                    await asyncio.sleep(0.3)
-                    await page.click(click_selector)
-                    await asyncio.sleep(1.0)
-                except Exception as exc:
-                    logger.warning(f"Could not click selector '{click_selector}': {exc}")
+        if scroll_depth > 0:
+            for _ in range(scroll_depth):
+                await page.evaluate("window.scrollBy(0, window.innerHeight * 1.5)")
+                await asyncio.sleep(0.5)
 
-            if wait_for_selector:
-                try:
-                    await page.wait_for_selector(wait_for_selector, timeout=timeout * 1000)
-                except Exception as exc:
-                    logger.warning(f"Wait for selector '{wait_for_selector}' timed out: {exc}")
+        if wait_seconds > 0:
+            await asyncio.sleep(min(wait_seconds, 30.0))
 
-            if scroll_depth > 0:
-                for i in range(scroll_depth):
-                    await page.evaluate("window.scrollBy(0, window.innerHeight * 1.5)")
-                    await asyncio.sleep(0.8)
+        if evaluate_js:
+            try:
+                js_eval_result = await page.evaluate(evaluate_js)
+            except Exception as exc:
+                js_eval_result = f"JS Evaluation Error: {exc}"
 
-            if wait_seconds > 0:
-                await asyncio.sleep(min(wait_seconds, 30.0))
+        if take_screenshot:
+            screenshot_bytes = await page.screenshot(full_page=True, type="jpeg", quality=75)
+            screenshot_base64 = base64.b64encode(screenshot_bytes).decode("utf-8")
 
-            if evaluate_js:
-                try:
-                    js_eval_result = await page.evaluate(evaluate_js)
-                except Exception as exc:
-                    js_eval_result = f"JS Evaluation Error: {exc}"
+        content_html = await page.content()
+        page_title = await page.title()
 
-            if take_screenshot:
-                screenshot_bytes = await page.screenshot(full_page=True, type="jpeg", quality=75)
-                screenshot_base64 = base64.b64encode(screenshot_bytes).decode("utf-8")
+        result = parse_html_content(
+            html=content_html,
+            url=url,
+            css_selector=css_selector,
+            status_code=status_code,
+            strip_ads=block_ads,
+        )
 
-            content_html = await page.content()
-            page_title = await page.title()
+        if not result.title and page_title:
+            result.title = page_title
 
-            result = parse_html_content(
-                html=content_html,
-                url=url,
-                css_selector=css_selector,
-                status_code=status_code,
-                strip_ads=block_ads,
-            )
+        if js_eval_result is not None:
+            result.metadata["evaluated_js_result"] = js_eval_result
 
-            if not result.title and page_title:
-                result.title = page_title
+        if screenshot_base64:
+            result.metadata["screenshot_jpeg_base64"] = screenshot_base64[:100] + "... (truncated in meta)"
+            result.metadata["has_screenshot"] = True
+            result.structured_data["screenshot_base64"] = screenshot_base64
 
-            if js_eval_result is not None:
-                result.metadata["evaluated_js_result"] = js_eval_result
+        return result
 
-            if screenshot_base64:
-                result.metadata["screenshot_jpeg_base64"] = screenshot_base64[:100] + "... (truncated in meta)"
-                result.metadata["has_screenshot"] = True
-                result.structured_data["screenshot_base64"] = screenshot_base64
-
-            return result
-
-        except Exception as exc:
-            logger.error(f"Browser scrape error for {url}: {exc}")
-            return ExtractionResult(
-                url=url,
-                title="Browser Scraping Error",
-                content_markdown=f"**Error rendering {url} with browser:** {str(exc)}",
-                content_text=f"Error: {str(exc)}",
-                status_code=500,
-            )
-        finally:
+    except Exception as exc:
+        logger.error(f"Browser scrape error for {url}: {exc}")
+        return ExtractionResult(
+            url=url,
+            title="Browser Scraping Error",
+            content_markdown=f"**Error rendering {url} with browser:** {str(exc)}",
+            content_text=f"Error: {str(exc)}",
+            status_code=500,
+        )
+    finally:
+        # Context is closed cleanly in ~5ms, browser process stays warm
+        try:
             await context.close()
-            await browser.close()
+        except Exception:
+            pass
+

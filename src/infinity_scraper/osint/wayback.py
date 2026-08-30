@@ -22,8 +22,9 @@ async def fetch_wayback_snapshots(
     Query the Internet Archive CDX API for historical snapshot timestamps.
     """
     clean_url = url.strip()
-    cdx_api = "http://web.archive.org/cdx/search/cdx"
+    cdx_api = "https://web.archive.org/cdx/search/cdx"
     params = {
+
         "url": clean_url,
         "output": "json",
         "fl": "timestamp,original,mimetype,statuscode,digest",

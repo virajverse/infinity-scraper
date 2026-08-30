@@ -109,8 +109,6 @@ def get_stealth_headers(url: Optional[str] = None, custom_headers: Optional[Dict
         "Sec-Ch-Ua": '"Not A(Brand";v="8", "Chromium";v="133", "Google Chrome";v="133"',
         "Sec-Ch-Ua-Mobile": "?0",
         "Sec-Ch-Ua-Platform": '"Windows"',
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
         "Sec-Fetch-Site": "none",
         "Sec-Fetch-User": "?1",
         "Upgrade-Insecure-Requests": "1",
@@ -126,3 +124,24 @@ def get_stealth_headers(url: Optional[str] = None, custom_headers: Optional[Dict
         headers.update(custom_headers)
 
     return headers
+
+
+
+def get_rotating_proxy(custom_proxy: Optional[str] = None) -> Optional[str]:
+
+    """Returns a custom proxy if provided, or rotates through PROXY_POOL in environment."""
+    if custom_proxy and custom_proxy.strip():
+        return custom_proxy.strip()
+    
+    proxy_pool_env = os.getenv("PROXY_POOL", os.getenv("PROXIES", "")).strip()
+    if proxy_pool_env:
+        proxies = [p.strip() for p in proxy_pool_env.split(",") if p.strip()]
+        if proxies:
+            return random.choice(proxies)
+            
+    https_proxy = os.getenv("HTTPS_PROXY", os.getenv("HTTP_PROXY", "")).strip()
+    if https_proxy:
+        return https_proxy
+        
+    return None
+
