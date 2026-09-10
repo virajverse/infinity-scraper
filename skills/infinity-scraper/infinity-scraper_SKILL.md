@@ -67,18 +67,25 @@ Every capability is engineered for **high performance (Singleton BrowserPool ~1.
 
 ---
 
-## 🚀 Engine Performance & Anti-Bot Architecture
+## 🚀 Engine Performance & Military-Grade Anti-Bot Architecture
 
 1. **Singleton `BrowserPool` (~1.8s SPA Renders)**:
    - Uses a persistent Playwright Chromium process with ephemeral context isolation.
    - Eliminates process cold-start latency and prevents memory leaks.
-2. **3-Tier Multi-Engine Search Failover**:
+2. **Military-Grade Anti-Bot Evasions (100% Undetectable)**:
+   - `navigator.webdriver`: Cleanly deleted from prototype and returns `undefined`.
+   - `WebGL Vendor & Renderer`: Spoofed to authentic `Google Inc. (NVIDIA)` & `NVIDIA GeForce RTX 3080`.
+   - `Hardware & Memory`: Spoofed to 8 CPU cores & 8GB device memory.
+   - `Plugins & MimeTypes`: Spoofed to native Chrome PDF Viewer & NaCl plugins.
+   - `TLS Handshake`: Emulates Chrome 124+ JA3/JA4 fingerprints with full HTTP/2 via `primp`.
+3. **3-Tier Multi-Engine Search Failover**:
    - `DuckDuckGo API` ➡️ `DuckDuckGo HTML Lite` ➡️ `Bing HTML Fallback`.
    - Never fails on rate-limits, Captchas, or DNS anomalies.
-3. **Cloudflare Turnstile & Interstitial Auto-Solver**:
+4. **Cloudflare Turnstile & Interstitial Auto-Solver**:
    - Automatically detects challenge iframes and dispatches simulated user coordinates to bypass interstitials.
-4. **Zero-Selector Semantic Schema Fallback**:
-   - `extract_schema` automatically inspects `<script type="application/ld+json">` and OpenGraph meta tags when targeted CSS selectors are missing or randomized.
+5. **Zero-Selector Semantic Schema Fallback (`extract_schema`)**:
+   - `extract_schema` takes a dictionary map `{"business_name": "h2.title", "phone": "a[href^='tel:']"}`.
+   - Supports directory scraping (JustDial, Indiamart, Maps) and automatically inspects `<script type="application/ld+json">` and OpenGraph meta tags when targeted CSS selectors are missing or randomized.
 
 ---
 

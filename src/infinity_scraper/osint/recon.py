@@ -122,21 +122,13 @@ async def deep_public_entity_recon(
 
     dork_categories = {
         "Professional & Developer Registries": [
-            f'"{clean_name}"{inclusion_clause}{exclusion_clause} site:linkedin.com/in',
-            f'"{clean_name}"{inclusion_clause}{exclusion_clause} site:github.com',
-            f'"{clean_name}"{inclusion_clause}{exclusion_clause} site:stackoverflow.com/users OR site:dev.to',
-            f'"{clean_name}"{inclusion_clause}{exclusion_clause} site:kaggle.com OR site:huggingface.co OR site:leetcode.com',
+            f'"{clean_name}"{inclusion_clause}{exclusion_clause} (site:linkedin.com/in OR site:github.com OR site:dev.to)',
         ],
-        "Academic & Research Publications": [
-            f'"{clean_name}"{inclusion_clause}{exclusion_clause} site:scholar.google.com OR site:researchgate.net',
-            f'"{clean_name}"{inclusion_clause}{exclusion_clause} site:medium.com OR site:substack.com OR site:hashnode.com',
-        ],
-        "Corporate, Startup & Director Filings": [
-            f'"{clean_name}"{inclusion_clause}{exclusion_clause} site:crunchbase.com/person OR site:producthunt.com',
-            f'"{clean_name}"{inclusion_clause}{exclusion_clause} "founder" OR "director" OR "ceo" OR "partner"',
+        "Corporate & Director Filings": [
+            f'"{clean_name}"{inclusion_clause}{exclusion_clause} ("founder" OR "director" OR "ceo" OR "partner" OR site:crunchbase.com)',
         ],
         "Public News, Media & Web Mentions": [
-            f'"{clean_name}"{inclusion_clause}{exclusion_clause} "interview" OR "announcement" OR "conference"',
+            f'"{clean_name}"{inclusion_clause}{exclusion_clause} ("interview" OR "announcement" OR "news")',
         ],
     }
 
@@ -147,20 +139,24 @@ async def deep_public_entity_recon(
     for cat_name, queries in dork_categories.items():
         discovered_by_category[cat_name] = []
         for q in queries:
-            results = search_web_ddg(query=q, max_results=3, timelimit=time_range)
-            for r in results:
-                u = r.get("url")
-                if u and u not in seen_urls:
-                    seen_urls.add(u)
-                    entry = {
-                        "title": r.get("title", ""),
-                        "url": u,
-                        "snippet": r.get("snippet", ""),
-                        "category": cat_name,
-                        "query": q,
-                    }
-                    discovered_by_category[cat_name].append(entry)
-                    all_unique_urls.append(entry)
+            try:
+                results = search_web_ddg(query=q, max_results=5, timelimit=time_range)
+                for r in (results or []):
+                    u = r.get("url")
+                    if u and u not in seen_urls:
+                        seen_urls.add(u)
+                        entry = {
+                            "title": r.get("title", ""),
+                            "url": u,
+                            "snippet": r.get("snippet", ""),
+                            "category": cat_name,
+                            "query": q,
+                        }
+                        discovered_by_category[cat_name].append(entry)
+                        all_unique_urls.append(entry)
+            except Exception as e:
+                logger.warning(f"OSINT dork query failed for '{q}': {e}")
+
 
     scraped_profiles: List[Dict[str, Any]] = []
     if scrape_top_profiles and all_unique_urls:

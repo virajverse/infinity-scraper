@@ -6,6 +6,8 @@ import asyncio
 import logging
 from typing import Any, Dict, List, Optional
 
+logger = logging.getLogger(__name__)
+
 try:
     from ddgs import DDGS
 except ImportError:
@@ -13,6 +15,7 @@ except ImportError:
         from duckduckgo_search import DDGS
     except ImportError:
         DDGS = None
+
 
 from infinity_scraper.engines.fast import fetch_url_fast
 from infinity_scraper.engines.browser import fetch_url_browser
@@ -92,11 +95,12 @@ def _search_bing_fallback(query: str, max_results: int = 5) -> List[Dict[str, An
 def search_web_ddg(
     query: str,
     max_results: int = 5,
-    region: str = "wt-wt",
+    region: str = "us-en",
     safesearch: str = "moderate",
     timelimit: Optional[str] = None,
     search_type: str = "text",
 ) -> List[Dict[str, Any]]:
+
     results = []
     # Tier 1: DDGS API
     if DDGS:

@@ -22,21 +22,64 @@ from infinity_scraper.extractors.content import ExtractionResult, parse_html_con
 logger = logging.getLogger(__name__)
 
 STEALTH_JS = """
-Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
-Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
-Object.defineProperty(navigator, 'plugins', {
-    get: () => [{ name: 'Chrome PDF Plugin' }, { name: 'Chrome PDF Viewer' }, { name: 'Native Client' }]
-});
-if (!window.chrome) {
-    window.chrome = { runtime: {}, loadTimes: function() {}, csi: function() {}, app: {} };
-}
-const originalQuery = window.navigator.permissions.query;
-window.navigator.permissions.query = (parameters) => (
-    parameters.name === 'notifications' ?
-        Promise.resolve({ state: Notification.permission }) :
-        originalQuery(parameters)
-);
+(() => {
+    // 1. Wipe navigator.webdriver cleanly
+    try {
+        delete Object.getPrototypeOf(navigator).webdriver;
+    } catch (e) {}
+    Object.defineProperty(navigator, 'webdriver', { get: () => undefined, configurable: true });
+
+    // 2. Realistic Languages & Platform
+    Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'], configurable: true });
+    Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8, configurable: true });
+    Object.defineProperty(navigator, 'deviceMemory', { get: () => 8, configurable: true });
+
+    // 3. Realistic Plugins & MimeTypes
+    const mockPlugins = [
+        { name: 'Chrome PDF Plugin', filename: 'internal-pdf-viewer', description: 'Portable Document Format' },
+        { name: 'Chrome PDF Viewer', filename: 'mhjfbmdgcfjbbpaeojofohoefgiehjai', description: '' },
+        { name: 'Native Client', filename: 'internal-nacl-plugin', description: '' }
+    ];
+    Object.defineProperty(navigator, 'plugins', { get: () => mockPlugins, configurable: true });
+
+    // 4. Authentic window.chrome object
+    if (!window.chrome) {
+        window.chrome = {
+            app: { isInstalled: false, InstallState: { DISABLED: 'DISABLED', INSTALLED: 'INSTALLED', NOT_INSTALLED: 'NOT_INSTALLED' }, RunningState: { CANNOT_RUN: 'CANNOT_RUN', READY_TO_RUN: 'READY_TO_RUN', RUNNING: 'RUNNING' } },
+            runtime: { OnInstalledReason: {}, OnRestartRequiredReason: {}, PlatformArch: { X86_64: 'x86-64' }, PlatformNaclArch: {}, PlatformOs: { WIN: 'win' }, RequestUpdateCheckStatus: {} },
+            loadTimes: function() {},
+            csi: function() {}
+        };
+    }
+
+    // 5. Spoof WebGL Vendor & Renderer (NVIDIA RTX 3080)
+    const getParameter = WebGLRenderingContext.prototype.getParameter;
+    WebGLRenderingContext.prototype.getParameter = function(parameter) {
+        if (parameter === 37445) return 'Google Inc. (NVIDIA)';
+        if (parameter === 37446) return 'ANGLE (NVIDIA, NVIDIA GeForce RTX 3080 Direct3D11 vs_5_0 ps_5_0, D3D11)';
+        return getParameter.apply(this, arguments);
+    };
+    if (typeof WebGL2RenderingContext !== 'undefined') {
+        const getParameter2 = WebGL2RenderingContext.prototype.getParameter;
+        WebGL2RenderingContext.prototype.getParameter = function(parameter) {
+            if (parameter === 37445) return 'Google Inc. (NVIDIA)';
+            if (parameter === 37446) return 'ANGLE (NVIDIA, NVIDIA GeForce RTX 3080 Direct3D11 vs_5_0 ps_5_0, D3D11)';
+            return getParameter2.apply(this, arguments);
+        };
+    }
+
+    // 6. Permissions API Spoofing
+    if (window.navigator.permissions) {
+        const originalQuery = window.navigator.permissions.query;
+        window.navigator.permissions.query = (parameters) => (
+            parameters.name === 'notifications' ?
+                Promise.resolve({ state: Notification.permission, onchange: null }) :
+                originalQuery(parameters)
+        );
+    }
+})();
 """
+
 
 AUTO_DISMISS_COOKIE_JS = """
 (() => {
