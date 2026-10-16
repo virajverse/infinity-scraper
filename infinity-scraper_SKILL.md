@@ -8,7 +8,7 @@ description: >-
   time-travel via Wayback Machine, enumerate subdomains, fingerprint tech stacks, and execute multi-signal OSINT & GEOINT location intelligence.
 ---
 
-# ⚡ InfinityScrape MCP: Master Autonomous AI Agent Playbook (33 Tools)
+# ⚡ InfinityScrape MCP: Master Autonomous AI Agent Playbook (34 Tools)
 
 This skill empowers any AI model (**Claude 3.7, GPT-4o, DeepSeek-R1/V3, Llama 3.3, Qwen, Antigravity IDE, Open WebUI**) with **god-tier data extraction, web intelligence, and multi-signal OSINT & GEOINT reconnaissance superpowers** on **Port 8000** (`http://127.0.0.1:8000/openapi.json` / `https://mcp1.taliyotechnologies.com`).
 
@@ -35,10 +35,11 @@ Every capability is engineered for **high performance (Singleton BrowserPool ~1.
 
 ---
 
-## 🧭 Dynamic Intent-to-Tool Matrix (All 33 Tools)
+## 🧭 Dynamic Intent-to-Tool Matrix (All 34 Tools)
 
 | Intent / Trigger in User Request | Primary Tool | Parameter Strategy |
 | :--- | :--- | :--- |
+| **Autonomous Symbiotic Anti-Bot Bypass** | `scrape_hybrid` | `url`, `max_chars=50000`, `wait_seconds=2.0` (Auto-shifts blocked URLs to Spectra Browser). |
 | **Specific Webpage / Clean Markdown** | `scrape_url` | `url`, `engine='auto'`, `strip_ads=True`, `max_chars=50000`. |
 | **Live Internet Search / Anti-429** | `search_web` | `query`, `max_results=5`, `search_type='text'` (Auto 3-tier failover). |
 | **Live Autonomous Web Research Report** | `search_and_scrape` | `query`, `max_results=4`, `use_browser=False`. |
