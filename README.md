@@ -1,4 +1,4 @@
-# 🌐 InfinityScrape MCP: World-Class Web Scraping, Dynamic SPA Rendering & 34-Tool OSINT Intelligence Suite
+# 🌐 InfinityScrape MCP: World-Class Web Scraping, Dynamic SPA Rendering & 33-Tool OSINT Intelligence Suite
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
@@ -18,8 +18,8 @@
 - [🏗️ Architectural Overview](#️-architectural-overview)
 - [🚀 Quick Start & 1-Click Installation](#-quick-start--1-click-installation)
 - [🔌 AI Client Integration (Open WebUI, Claude, Cursor)](#-ai-client-integration)
-- [🛠️ Complete 34-Tool Reference Catalog](#️-complete-34-tool-reference-catalog)
-  - [1. Anti-Bot Web Scraping, Dynamic SPAs & Crawlers (7 Tools)](#1-anti-bot-web-scraping-dynamic-spas--crawlers-7-tools)
+- [🛠️ Complete 33-Tool Reference Catalog](#️-complete-33-tool-reference-catalog)
+  - [1. Anti-Bot Web Scraping, Dynamic SPAs & Crawlers (6 Tools)](#1-anti-bot-web-scraping-dynamic-spas--crawlers-6-tools)
   - [2. Real-Time Web Search, Research & Archive OSINT (4 Tools)](#2-real-time-web-search-research--archive-osint-4-tools)
   - [3. Media, Document & RAG Extraction (4 Tools)](#3-media-document--rag-extraction-4-tools)
   - [4. Deep Public OSINT & Entity Reconnaissance (4 Tools)](#4-deep-public-osint--entity-reconnaissance-4-tools)
@@ -169,13 +169,12 @@ Add to your `mcp_config.json`:
 
 ---
 
-## 🛠️ Complete 34-Tool Reference Catalog
+## 🛠️ Complete 33-Tool Reference Catalog
 
-### 1. Anti-Bot Web Scraping, Dynamic SPAs & Crawlers (7 Tools)
+### 1. Anti-Bot Web Scraping, Dynamic SPAs & Crawlers (6 Tools)
 | Tool | Description |
 | :--- | :--- |
-| **`scrape_hybrid`** | Autonomous Symbiotic Scraper: Fetches at maximum speed (<150ms) via TLS; if any anti-bot challenge is detected, automatically shifts the task to Spectra Browser's human Chrome context. |
-| **`scrape_url`** | Production-grade scraping into clean, ad-free Markdown with auto-engine switching (Fast TLS -> Playwright Chromium fallback). |
+| **`scrape_url`** | Production-grade scraping into clean, ad-free Markdown with auto-engine switching (Fast TLS -> Playwright Chromium fallback). Automatically surfaces anti-bot challenge advisories for agent escalation. |
 | **`scrape_dynamic`** | Dynamic SPA rendering via Singleton Playwright BrowserPool (~1.8s) with Cloudflare Turnstile auto-bypass and infinite scroll. |
 | **`extract_schema`** | Zero-selector semantic extraction mapping custom JSON schemas with auto JSON-LD & OpenGraph meta fallback. |
 | **`deep_crawl`** | Asynchronous recursive BFS documentation crawler with depth limits, domain locking, and path prefix filters. |

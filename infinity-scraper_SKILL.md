@@ -8,7 +8,7 @@ description: >-
   time-travel via Wayback Machine, enumerate subdomains, fingerprint tech stacks, and execute multi-signal OSINT & GEOINT location intelligence.
 ---
 
-# ⚡ InfinityScrape MCP: Master Autonomous AI Agent Playbook (34 Tools)
+# ⚡ InfinityScrape MCP: Master Autonomous AI Agent Playbook (33 Tools)
 
 This skill empowers any AI model (**Claude 3.7, GPT-4o, DeepSeek-R1/V3, Llama 3.3, Qwen, Antigravity IDE, Open WebUI**) with **god-tier data extraction, web intelligence, and multi-signal OSINT & GEOINT reconnaissance superpowers** on **Port 8000** (`http://127.0.0.1:8000/openapi.json` / `https://mcp1.taliyotechnologies.com`).
 
@@ -35,11 +35,10 @@ Every capability is engineered for **high performance (Singleton BrowserPool ~1.
 
 ---
 
-## 🧭 Dynamic Intent-to-Tool Matrix (All 34 Tools)
+## 🧭 Dynamic Intent-to-Tool Matrix (All 33 Tools)
 
 | Intent / Trigger in User Request | Primary Tool | Parameter Strategy |
 | :--- | :--- | :--- |
-| **Autonomous Symbiotic Anti-Bot Bypass** | `scrape_hybrid` | `url`, `max_chars=50000`, `wait_seconds=2.0` (Auto-shifts blocked URLs to Spectra Browser). |
 | **Specific Webpage / Clean Markdown** | `scrape_url` | `url`, `engine='auto'`, `strip_ads=True`, `max_chars=50000`. |
 | **Live Internet Search / Anti-429** | `search_web` | `query`, `max_results=5`, `search_type='text'` (Auto 3-tier failover). |
 | **Live Autonomous Web Research Report** | `search_and_scrape` | `query`, `max_results=4`, `use_browser=False`. |
@@ -201,30 +200,35 @@ $$\text{Emergent Pattern} = \text{Seed}_i \xrightarrow{\text{Data Hand-off}} \te
 
 ---
 
-## 🤝 Two-Engine Symbiosis: Infinity-Scraper + Spectra-Browser MCP
+## 🤝 Decoupled Agentic Symbiosis: Infinity-Scraper + Spectra-Browser MCP
 
-Neither pure headless scraping nor heavy interactive browser automation is 100% complete in isolation. By orchestrating **InfinityScrape (Port 8000)** and **SpectraBrowser (Port 8002)**, an AI agent operates with **98-99% real-world web coverage**:
+> **Core Agent Directive (Zero Hardcoded Coupling):**
+> InfinityScrape and SpectraBrowser are **100% decoupled, independent MCP servers**. InfinityScrape does **NOT** hardcode or execute SpectraBrowser commands under the hood.
+> **The AI AGENT is the Brain & Sole Orchestrator:**
+> 1. **Default High Speed:** The AI Agent initiates all research, search, sitemaps, and bulk scraping using **InfinityScrape** (<150ms per page, 33 tools).
+> 2. **Signal Detection:** If InfinityScrape encounters an interactive anti-bot wall (Cloudflare Turnstile, Reddit "Prove your humanity", or 403 challenge), it does not fail silently—it returns an explicit **Anti-Bot Advisory Signal** (`requires_browser_escalation: true`).
+> 3. **Agent-Driven Escalation:** The **AI Agent** reads this signal and autonomously decides to shift that single blocked target to **SpectraBrowser** (`browser_navigate(url=...)`, followed by `page_understand()` or `page_inspect()`).
+> 4. **Bypass & Resume:** SpectraBrowser accesses the URL via the user's real human Chrome context. The AI Agent ingests the rendered markdown and immediately resumes high-speed bulk operations with InfinityScrape!
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                  WATERFALL ESCALATION ARCHITECTURE                     │
+│             DECOUPLED AGENTIC WATERFALL ARCHITECTURE                   │
 └───────────────────────────────────┬────────────────────────────────────┘
                                     │
-      ┌─────────────────────────────▼─────────────────────────────┐
-      │  TIER 1: InfinityScrape Fast Engine (TLS JA3 / primp)     │ ➔ Covers ~88-90% of web
-      │  • Ultra-fast (<150ms), 20MB RAM, zero headless overhead │    (Sitemaps, OSINT, Blogs)
-      └─────────────────────────────┬─────────────────────────────┘
-                                    │ (If thin content / JS detected)
-      ┌─────────────────────────────▼─────────────────────────────┐
-      │  TIER 2: InfinityScrape Auto Browser (Playwright / Edge)  │ ➔ Covers ~6-8% of web
-      │  • Lightweight headless SPA rendering, CSS selectors      │    (React, SPAs, Vue)
-      └─────────────────────────────┬─────────────────────────────┘
-                                    │ (If is_bot_challenge / Turnstile / Login Wall)
-      ┌─────────────────────────────▼─────────────────────────────┐
-      │  TIER 3: SpectraBrowser MCP (Extension-Native / CDP)      │ ➔ Covers the stubborn 2-4%
-      │  • Real human Chrome session, genuine cookies, GPU canvas │    (LinkedIn, Reddit CAPTCHA,
-      │  • Visual OCR, coordinate clicks, 2FA/login preservation  │     Akamai/Datadome walls)
-      └───────────────────────────────────────────────────────────┘
+                               [AI AGENT]
+                         (The Brain & Decision Maker)
+                                    │
+         ┌──────────────────────────┴──────────────────────────┐
+         ▼                                                     ▼
+┌─────────────────────────────────┐           ┌─────────────────────────────────┐
+│     INFINITY SCRAPER (MCP)      │           │      SPECTRA BROWSER (MCP)      │
+│ • Ultra-Fast TLS Engine (<150ms)│           │ • Live Chrome Extension / CDP   │
+│ • 33 Tools: OSINT, Search, Docs │           │ • 99 Tools: DOM & Visual QA     │
+│ • Fast, Lightweight (20MB RAM)  │           │ • Human Cookies & GPU Canvas    │
+└────────────────┬────────────────┘           └────────────────┬────────────────┘
+                 │                                             ▲
+                 │ (If Anti-Bot Challenge Signal Raised)       │
+                 └────────────► [AI AGENT SHIFTS] ─────────────┘
 ```
 
 ### 🔬 Honest Reality Check: 5 Remaining Bottlenecks (Zero Cheating)
