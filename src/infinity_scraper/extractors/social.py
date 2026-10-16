@@ -78,11 +78,36 @@ async def extract_reddit_thread(
                     "markdown": "\n".join(doc),
                 }
     except Exception as exc:
-        logger.error(f"Reddit thread extraction failed for {url}: {exc}")
+        logger.error(f"Reddit JSON API failed for {url}: {exc}. Attempting browser rendering fallback...")
+
+    # Tier 2: Browser Fallback with Anti-Bot Challenge Handling
+    try:
+        from infinity_scraper.engines.browser import fetch_url_browser
+        browser_res = await fetch_url_browser(url=clean_url)
+        if browser_res and browser_res.status_code == 200:
+            if "prove your humanity" in browser_res.content_markdown.lower() or "prove your humanity" in browser_res.title.lower():
+                return {
+                    "url": clean_url,
+                    "error": "Reddit anti-bot challenge encountered ('Prove your humanity').",
+                    "markdown": f"⚠️ **Reddit Anti-Bot Active:** Reddit presented an interactive CAPTCHA ('Prove your humanity') for `{clean_url}`. Authenticated session or browser bypass required.",
+                }
+            if len(browser_res.content_markdown.strip()) > 100:
+                return {
+                    "url": clean_url,
+                    "title": browser_res.title,
+                    "subreddit": "",
+                    "author": "reddit_community",
+                    "score": 0,
+                    "comments_count": 0,
+                    "comments": [],
+                    "markdown": f"# 💬 Reddit Thread: {browser_res.title}\n**URL:** [{clean_url}]({clean_url})\n\n{browser_res.content_markdown}",
+                }
+    except Exception as b_exc:
+        logger.warning(f"Reddit browser fallback failed: {b_exc}")
 
     return {
         "url": url,
-        "error": "Failed to parse Reddit thread.",
+        "error": "Failed to parse Reddit thread. Site may be blocking automated requests.",
         "markdown": f"Could not extract Reddit thread from `{url}`.",
     }
 

@@ -183,7 +183,8 @@ async def search_and_scrape_all(
             }
 
     tasks = [_scrape_one(item) for item in search_results if item.get("url")]
-    scraped_pages = await asyncio.gather(*tasks, return_exceptions=False)
+    results_raw = await asyncio.gather(*tasks, return_exceptions=True)
+    scraped_pages = [p for p in results_raw if isinstance(p, dict) and p.get("url")]
 
     doc_parts = [
         f"# Live Web Research: {query}",

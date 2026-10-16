@@ -113,17 +113,25 @@ async def scrape_url(
     else:
         res = await fetch_url_fast(url=url, css_selector=sel)
         has_thin_content = len(res.content_text.strip()) < 180 and len(res.content_markdown.strip()) < 180
-        indicates_js = any(phrase in res.raw_html.lower() for phrase in [
+        is_bot_challenge = res.metadata.get("is_bot_challenge", False)
+        indicates_js = is_bot_challenge or any(phrase in res.raw_html.lower() for phrase in [
             "enable javascript to run this app",
             "you need to enable javascript",
             "please enable javascript",
             "javascript is disabled",
             "checking your browser",
             "just a moment...",
+            "prove your humanity",
+            "attention required! | cloudflare",
         ])
         if (has_thin_content or indicates_js) and res.status_code in (200, 403, 503):
             logger.info(f"Auto-engine: upgrading to Playwright browser for {url}")
-            res = await fetch_url_browser(url=url, css_selector=sel, wait_seconds=max(wait_seconds, 1.5), block_ads=strip_ads)
+            try:
+                browser_res = await fetch_url_browser(url=url, css_selector=sel, wait_seconds=max(wait_seconds, 1.5), block_ads=strip_ads)
+                if len(browser_res.content_markdown.strip()) > len(res.content_markdown.strip()) or browser_res.status_code == 200:
+                    res = browser_res
+            except Exception as e:
+                logger.warning(f"Browser upgrade failed: {e}. Retaining fast engine response.")
 
     output = res.format_output(
         include_metadata=True,

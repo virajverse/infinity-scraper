@@ -4,6 +4,7 @@ Extracts clean Markdown, structured fields, tables, metadata, and links from raw
 """
 
 import json
+import logging
 import re
 from typing import Any, Dict, List, Optional
 from urllib.parse import urljoin, urlparse
@@ -13,6 +14,8 @@ import trafilatura
 from markdownify import markdownify as md
 
 from infinity_scraper.config import AD_AND_POPUP_SELECTORS
+
+logger = logging.getLogger(__name__)
 
 
 class ExtractionResult:
@@ -252,6 +255,24 @@ def parse_html_content(
     soup = BeautifulSoup(html, "lxml" if "lxml" in BeautifulSoup.__dict__ else "html.parser")
     meta = extract_metadata(soup, url)
     title = meta.get("title") or meta.get("og_title") or ""
+
+    # Anti-Bot & Cloudflare Challenge Detection
+    challenge_indicators = [
+        "just a moment...",
+        "attention required! | cloudflare",
+        "prove your humanity",
+        "access denied",
+        "ddos-guard",
+        "please enable javascript",
+        "checking your browser before accessing",
+        "security check",
+    ]
+    is_challenge = any(ind in title.lower() for ind in challenge_indicators) or any(
+        ind in html[:2000].lower() for ind in ["cf-turnstile", "cf-browser-verification", "ray id:", "challenges.cloudflare.com"]
+    )
+    if is_challenge:
+        meta["is_bot_challenge"] = True
+        logger.info(f"Anti-bot or CAPTCHA challenge detected on {url}")
 
     if css_selector:
         selected_elements = soup.select(css_selector)

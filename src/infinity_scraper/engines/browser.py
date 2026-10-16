@@ -164,18 +164,53 @@ class BrowserPool:
                     self._playwright = await async_playwright().start()
                 
                 proxy_dict = {"server": proxy} if proxy else None
-                self._browser = await self._playwright.chromium.launch(
-                    headless=True,
-                    args=[
-                        "--no-sandbox",
-                        "--disable-setuid-sandbox",
-                        "--disable-dev-shm-usage",
-                        "--disable-blink-features=AutomationControlled",
-                        "--disable-infobars",
-                        "--window-size=1920,1080",
-                    ],
-                    proxy=proxy_dict,
-                )
+                launch_args = [
+                    "--no-sandbox",
+                    "--disable-setuid-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--disable-blink-features=AutomationControlled",
+                    "--disable-infobars",
+                    "--window-size=1920,1080",
+                ]
+
+                # Priority 1: Default Playwright Chromium
+                try:
+                    self._browser = await self._playwright.chromium.launch(
+                        headless=True,
+                        args=launch_args,
+                        proxy=proxy_dict,
+                    )
+                    return self._browser
+                except Exception as e_chromium:
+                    logger.info(f"Playwright Chromium binary not found or failed ({e_chromium}). Falling back to system browsers...")
+
+                # Priority 2: System Microsoft Edge (Standard on Windows)
+                try:
+                    self._browser = await self._playwright.chromium.launch(
+                        channel="msedge",
+                        headless=True,
+                        args=launch_args,
+                        proxy=proxy_dict,
+                    )
+                    logger.info("Successfully initialized dynamic rendering using system Microsoft Edge.")
+                    return self._browser
+                except Exception as e_edge:
+                    logger.debug(f"System Edge channel launch failed: {e_edge}")
+
+                # Priority 3: System Google Chrome
+                try:
+                    self._browser = await self._playwright.chromium.launch(
+                        channel="chrome",
+                        headless=True,
+                        args=launch_args,
+                        proxy=proxy_dict,
+                    )
+                    logger.info("Successfully initialized dynamic rendering using system Google Chrome.")
+                    return self._browser
+                except Exception as e_chrome:
+                    logger.debug(f"System Chrome channel launch failed: {e_chrome}")
+
+                raise RuntimeError("No suitable browser executable found (Chromium, Edge, or Chrome). Install Playwright browser or Chrome/Edge.")
             return self._browser
 
     async def close_all(self):
@@ -230,8 +265,13 @@ async def fetch_url_browser(
     ua = user_agent or get_random_user_agent()
     active_proxy = get_rotating_proxy(proxy)
 
-    pool = await BrowserPool.get_instance()
-    browser = await pool.get_browser(active_proxy)
+    try:
+        pool = await BrowserPool.get_instance()
+        browser = await pool.get_browser(active_proxy)
+    except Exception as exc:
+        logger.warning(f"Browser engine unavailable for {url} ({exc}). Falling back to fast stealth HTTP engine...")
+        from infinity_scraper.engines.fast import fetch_url_fast
+        return await fetch_url_fast(url=url, proxy=proxy, css_selector=css_selector, timeout=timeout)
 
     # Ephemeral isolated context (instant ~50ms creation)
     context: BrowserContext = await browser.new_context(
