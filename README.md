@@ -1,4 +1,4 @@
-# 🌐 InfinityScrape MCP: World-Class Web Scraping, Dynamic SPA Rendering & 25-Tool OSINT Intelligence Suite
+# 🌐 InfinityScrape MCP: World-Class Web Scraping, Dynamic SPA Rendering & 33-Tool OSINT Intelligence Suite
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
@@ -7,7 +7,7 @@
 [![Zero-Cloud-API](https://img.shields.io/badge/Zero--Cloud--API-100%25%20Free%20%26%20Local-blue.svg)]()
 [![Zero-GPU](https://img.shields.io/badge/Zero--GPU-Ultra--Lightweight-orange.svg)]()
 
-**InfinityScrape MCP** is a standalone, production-grade Model Context Protocol (MCP) server engineered to provide AI models (**Open WebUI, Claude 3.7, DeepSeek-R1/V3, Antigravity AI, Cursor, LM Studio**) with **unlimited, high-speed, anti-bot resilient web scraping, dynamic SPA rendering, DuckDuckGo web search, Wayback Machine time-travel, instant YouTube transcription, and precision OSINT / GEOINT location intelligence**.
+**InfinityScrape MCP** is a standalone, production-grade Model Context Protocol (MCP) server engineered to provide AI models (**Open WebUI, Claude 3.7, DeepSeek-R1/V3, Antigravity AI, Cursor, LM Studio**) with **unlimited, high-speed, anti-bot resilient web scraping, dynamic SPA rendering, zero-selector contact/pricing/FAQ extraction, remote Word/Excel document streaming, XML sitemap crawling, DuckDuckGo search, Wayback Machine time-travel, instant YouTube transcription, and precision OSINT / GEOINT location intelligence**.
 
 ---
 
@@ -18,13 +18,14 @@
 - [🏗️ Architectural Overview](#️-architectural-overview)
 - [🚀 Quick Start & 1-Click Installation](#-quick-start--1-click-installation)
 - [🔌 AI Client Integration (Open WebUI, Claude, Cursor)](#-ai-client-integration)
-- [🛠️ Complete 25-Tool Reference Catalog](#️-complete-25-tool-reference-catalog)
+- [🛠️ Complete 33-Tool Reference Catalog](#️-complete-33-tool-reference-catalog)
   - [1. Anti-Bot Web Scraping, Dynamic SPAs & Crawlers (6 Tools)](#1-anti-bot-web-scraping-dynamic-spas--crawlers-6-tools)
   - [2. Real-Time Web Search, Research & Archive OSINT (4 Tools)](#2-real-time-web-search-research--archive-osint-4-tools)
   - [3. Media, Document & RAG Extraction (4 Tools)](#3-media-document--rag-extraction-4-tools)
   - [4. Deep Public OSINT & Entity Reconnaissance (4 Tools)](#4-deep-public-osint--entity-reconnaissance-4-tools)
   - [5. Infrastructure, Domain & Network Reconnaissance (5 Tools)](#5-infrastructure-domain--network-reconnaissance-5-tools)
   - [6. Precision GEOINT & Location Intelligence (2 Tools)](#6-precision-geoint--location-intelligence-2-tools)
+  - [7. Zero-Selector Semantics, Office Streaming & Change Radar (8 Tools)](#7-zero-selector-semantics-office-streaming--change-radar-8-tools)
 - [💻 Command-Line Interface (CLI)](#-command-line-interface-cli)
 - [🧪 Running Automated Tests](#-running-automated-tests)
 - [📄 License & Authors](#-license--authors)
@@ -218,6 +219,19 @@ Add to your `mcp_config.json`:
 | :--- | :--- |
 | **`osint_geoint_lookup`** | Forward geocoding of landmarks, streets, and addresses via OpenStreetMap/Nominatim down to postal code and GPS coordinates. |
 | **`osint_location_entity_search`** | Hierarchical entity location dorking correlating business entities with city, street, and postal landmarks. |
+
+### 7. Zero-Selector Semantics, Office Streaming & Change Radar (8 Tools)
+| Tool | Description |
+| :--- | :--- |
+| **`extract_contacts`** | Zero-selector extraction of verified emails, phone numbers, WhatsApp, GSTIN/CIN/EIN, social profiles, and postal codes. |
+
+| **`extract_pricing_table`** | Automatically identifies SaaS pricing cards, tier amounts ($/mo, $/yr, INR), billing cycles, feature matrices, and CTA buttons. |
+| **`extract_faqs`** | Heuristic and schema-based FAQ extractor pulling question-and-answer pairs from JSON-LD, `<details>`, and accordions. |
+| **`crawl_sitemap`** | High-speed XML sitemap parser with gzip decompression (.xml.gz) and recursive child sitemap index traversal. |
+| **`discover_sitemaps`** | Autonomously uncovers all active XML sitemaps for any domain via robots.txt inspection and standard endpoint probing. |
+| **`extract_docx_document`** | Streams remote online or local Word (.docx) documents into clean Markdown with full table matrices (zero local bloat). |
+| **`extract_xlsx_spreadsheet`**| Streams online or local Excel (.xlsx) spreadsheets, converting all worksheets into clean Markdown tables and JSON records. |
+| **`compare_page_diff`** | Temporal page diff & change radar detecting price adjustments, discontinued tiers, new features, and content similarity %. |
 
 ---
 

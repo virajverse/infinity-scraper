@@ -8,7 +8,10 @@ from typing import Any, Dict, List, Optional
 
 import httpx
 from pypdf import PdfReader
-import primp
+try:
+    import primp
+except ImportError:
+    primp = None
 
 from infinity_scraper.config import get_stealth_headers
 
@@ -24,19 +27,21 @@ async def extract_pdf_from_url(
     headers = get_stealth_headers(url)
     pdf_bytes = None
     try:
-        try:
-            client = primp.AsyncClient(
-                impersonate="random",
-                proxy=proxy,
-                follow_redirects=True,
-                timeout=timeout,
-                verify=False,
-            )
-            resp = await client.get(url, headers=headers)
-            if resp.status_code == 200:
-                pdf_bytes = resp.content
-        except Exception:
-            pass
+        if primp:
+            try:
+                client = primp.AsyncClient(
+                    impersonate="random",
+                    proxy=proxy,
+                    follow_redirects=True,
+                    timeout=timeout,
+                    verify=False,
+                )
+                resp = await client.get(url, headers=headers)
+                if resp.status_code == 200:
+                    pdf_bytes = resp.content
+            except Exception:
+                pass
+
 
         if not pdf_bytes:
             async with httpx.AsyncClient(

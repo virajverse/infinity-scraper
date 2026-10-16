@@ -11,7 +11,11 @@ import sys
 from typing import Any, Dict, List, Optional
 
 from bs4 import BeautifulSoup
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.fastmcp import FastMCP
+except (ImportError, ModuleNotFoundError):
+    from mcp.server.mcpserver import MCPServer as FastMCP
+
 
 from infinity_scraper.cache import cache
 from infinity_scraper.config import DEFAULT_MAX_CHARS
@@ -37,6 +41,24 @@ from infinity_scraper.osint.recon import deep_public_entity_recon
 from infinity_scraper.osint.search import osint_search_dork, search_and_scrape_all, search_web_ddg
 from infinity_scraper.osint.subdomains import audit_dns_records, enumerate_subdomains
 from infinity_scraper.osint.wayback import fetch_wayback_snapshots, scrape_wayback_snapshot
+from infinity_scraper.extractors.semantic import (
+    extract_contact_intelligence,
+    extract_pricing_intelligence,
+    extract_faq_intelligence,
+)
+from infinity_scraper.extractors.office import (
+    extract_docx_from_bytes,
+    extract_docx_from_url,
+    extract_xlsx_from_bytes,
+    extract_xlsx_from_url,
+)
+from infinity_scraper.engines.sitemap import (
+    fetch_and_parse_sitemap,
+    discover_website_sitemaps,
+)
+from infinity_scraper.engines.diff import (
+    compute_page_diff,
+)
 
 logging.basicConfig(level=logging.INFO, stream=sys.stderr, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("infinity_scraper")
@@ -757,6 +779,194 @@ async def optimize_rag_chunks(
     """
     res = chunk_content_for_rag(text_or_markdown=text_or_markdown, max_chunk_chars=max_chunk_chars)
     return json.dumps(res, indent=2, ensure_ascii=False)
+
+
+# =============================================================================
+# 🚀 ADVANCED ZERO-SELECTOR SEMANTIC, OFFICE & SITEMAP TOOLS (v3.0)
+# =============================================================================
+
+@mcp.tool()
+async def extract_contacts(
+    url: str = "",
+    html_text: str = ""
+) -> str:
+    """
+    Zero-Selector Contact & Lead Intelligence:
+    Heuristically extracts emails, phone numbers, WhatsApp links, social profiles,
+    physical addresses, PIN/ZIP codes, and business registration IDs (GSTIN/CIN/EIN) from a webpage or raw text.
+    
+    Args:
+        url: The webpage URL to scrape and analyze (optional if html_text is given).
+        html_text: Raw HTML or text to analyze directly (optional if url is given).
+    """
+    raw_content = html_text
+    target_url = url
+    if url and not html_text:
+        res = await fetch_url_fast(url)
+        raw_content = res.raw_html or res.content_text
+    elif not html_text and not url:
+        return "Error: Provide either a url or html_text."
+
+    data = extract_contact_intelligence(raw_content, base_url=target_url)
+    return json.dumps(data, indent=2, ensure_ascii=False)
+
+
+@mcp.tool()
+async def extract_pricing_table(
+    url: str = "",
+    html_text: str = ""
+) -> str:
+    """
+    Zero-Selector SaaS & Product Pricing Table Extractor:
+    Automatically identifies tier names (Free, Pro, Enterprise), price amounts ($/mo, $/yr, INR),
+    billing cycles, feature bullet lists, popular plan badges, and CTA links.
+    
+    Args:
+        url: The pricing page URL to scrape and analyze.
+        html_text: Raw HTML or text of the pricing section.
+    """
+    raw_content = html_text
+    target_url = url
+    if url and not html_text:
+        res = await fetch_url_fast(url)
+        raw_content = res.raw_html or res.content_text
+    elif not html_text and not url:
+        return "Error: Provide either a url or html_text."
+
+    data = extract_pricing_intelligence(raw_content, base_url=target_url)
+    return json.dumps(data, indent=2, ensure_ascii=False)
+
+
+@mcp.tool()
+async def extract_faqs(
+    url: str = "",
+    html_text: str = ""
+) -> str:
+    """
+    Zero-Selector FAQ & Accordion Intelligence Extractor:
+    Extracts structured question-and-answer pairs by inspecting JSON-LD FAQPage schemas,
+    HTML5 <details><summary> tags, and accordion CSS heuristics.
+    
+    Args:
+        url: The webpage URL to extract FAQs from.
+        html_text: Raw HTML to extract FAQs from.
+    """
+    raw_content = html_text
+    target_url = url
+    if url and not html_text:
+        res = await fetch_url_fast(url)
+        raw_content = res.raw_html or res.content_text
+    elif not html_text and not url:
+        return "Error: Provide either a url or html_text."
+
+    data = extract_faq_intelligence(raw_content, base_url=target_url)
+    return json.dumps(data, indent=2, ensure_ascii=False)
+
+
+@mcp.tool()
+async def crawl_sitemap(
+    sitemap_url: str,
+    max_urls: int = 200,
+    crawl_nested: bool = True
+) -> str:
+    """
+    High-Speed XML Sitemap & Index Parser:
+    Streams and parses XML sitemaps, handling namespaces, .xml.gz gzip streams,
+    and automatically crawls child sitemaps if a sitemap index is provided.
+    
+    Args:
+        sitemap_url: URL of the sitemap (e.g. 'https://example.com/sitemap.xml').
+        max_urls: Maximum URLs to extract (default 200).
+        crawl_nested: If true, automatically follows nested sitemaps inside sitemapindex.
+    """
+    data = await fetch_and_parse_sitemap(sitemap_url=sitemap_url, max_urls=max_urls, crawl_nested=crawl_nested)
+    return json.dumps(data, indent=2, ensure_ascii=False)
+
+
+@mcp.tool()
+async def discover_sitemaps(
+    base_url: str
+) -> str:
+    """
+    Autonomously discovers all active XML sitemaps for a website by reading robots.txt
+    and testing standard location heuristics (/sitemap.xml, /sitemap_index.xml, etc.).
+    
+    Args:
+        base_url: The root domain or homepage URL (e.g. 'https://stripe.com').
+    """
+    data = await discover_website_sitemaps(base_url=base_url)
+    return json.dumps(data, indent=2, ensure_ascii=False)
+
+
+@mcp.tool()
+async def extract_docx_document(
+    url_or_path: str
+) -> str:
+    """
+    Word Document (.docx) Streamer & Table Parser:
+    Streams and converts remote or local Word .docx files into clean Markdown
+    preserving headings (H1-H4), bullet points, and full table matrices without local disk bloat.
+    
+    Args:
+        url_or_path: Remote URL (http/https) or local absolute file path to the .docx file.
+    """
+    if url_or_path.startswith("http://") or url_or_path.startswith("https://"):
+        data = await extract_docx_from_url(url_or_path)
+    else:
+        with open(url_or_path, "rb") as f:
+            data = extract_docx_from_bytes(f.read(), file_name=url_or_path.split("\\")[-1].split("/")[-1])
+    return json.dumps(data, indent=2, ensure_ascii=False)
+
+
+@mcp.tool()
+async def extract_xlsx_spreadsheet(
+    url_or_path: str,
+    max_rows: int = 100
+) -> str:
+    """
+    Excel Spreadsheet (.xlsx) Streamer & Structured Table Extractor:
+    Streams remote or local .xlsx spreadsheets and parses all worksheets into clean Markdown tables
+    and structured JSON records.
+    
+    Args:
+        url_or_path: Remote URL (http/https) or local absolute file path to the .xlsx file.
+        max_rows: Maximum rows to extract per worksheet (default 100).
+    """
+    if url_or_path.startswith("http://") or url_or_path.startswith("https://"):
+        data = await extract_xlsx_from_url(url_or_path, max_rows=max_rows)
+    else:
+        with open(url_or_path, "rb") as f:
+            data = extract_xlsx_from_bytes(f.read(), file_name=url_or_path.split("\\")[-1].split("/")[-1], max_rows_per_sheet=max_rows)
+    return json.dumps(data, indent=2, ensure_ascii=False)
+
+
+@mcp.tool()
+async def compare_page_diff(
+    old_content_or_url: str,
+    new_content_or_url: str
+) -> str:
+    """
+    Temporal Page Diff & Change Radar:
+    Compares two versions of a webpage or text, detecting pricing shifts, added/removed feature sections,
+    and calculating overall content similarity percentage.
+    
+    Args:
+        old_content_or_url: Historical text/markdown or URL.
+        new_content_or_url: Current live text/markdown or URL.
+    """
+    old_text = old_content_or_url
+    new_text = new_content_or_url
+
+    if old_content_or_url.startswith("http://") or old_content_or_url.startswith("https://"):
+        res_old = await fetch_url_fast(old_content_or_url)
+        old_text = res_old.content_markdown
+
+    if new_content_or_url.startswith("http://") or new_content_or_url.startswith("https://"):
+        res_new = await fetch_url_fast(new_content_or_url)
+        new_text = res_new.content_markdown
+
+    data = compute_page_diff(old_text, new_text)
+    return json.dumps(data, indent=2, ensure_ascii=False)
 
 
 def main():
