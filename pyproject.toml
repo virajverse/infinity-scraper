@@ -9,7 +9,7 @@ description = "World-Class Web Scraping, Dynamic SPA Rendering, YouTube Transcri
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-    { name = "VirajVerse", url = "https://github.com/virajverse" }
+    { name = "VirajVerse" }
 ]
 dependencies = [
     "mcp>=1.2.0",

@@ -98,6 +98,11 @@ def root():
     }
 
 
+@app.get("/health")
+def health():
+    return {"status": "healthy", "service": "infinity-scraper-openapi-bridge"}
+
+
 # Tolerance alias for Open WebUI
 @app.get("/openapi.json/openapi.json")
 def openapi_double_alias():

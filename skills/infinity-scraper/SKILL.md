@@ -123,3 +123,69 @@ Every capability is engineered for **high performance (Singleton BrowserPool ~1.
    │
    └──> Step 5: Synthesize structured Intelligence Dossier with zero guesswork.
 ```
+
+---
+
+## 🧬 Dynamic Cognitive Reasoning & Combinatorial Pattern Engine
+
+> **Agent Directive**: Do **NOT** restrict yourself to fixed, static recipes. The 25 tools of InfinityScrape form an orthogonal capability space. From **4 Fundamental Primitive Archetypes**, you can dynamically compose **hundreds of specialized, emergent workflow patterns** for any custom research or extraction challenge.
+
+```
+                    ┌───────────────────────────────────────────────┐
+                    │    THE 4 CORE PRIMITIVE SEED ARCHETYPES       │
+                    └───────────────────────┬───────────────────────┘
+                                            │
+         ┌──────────────────┬───────────────┴───────────────┬──────────────────┐
+         ▼                  ▼                               ▼                  ▼
+┌──────────────────┐ ┌───────────────────────────┐ ┌──────────────────┐ ┌────────────────────────┐
+│  [Archetype A]   │ │       [Archetype B]       │ │  [Archetype C]   │ │     [Archetype D]      │
+│  Wide-Spectrum   │ │     Deep Extraction &     │ │ Cross-Correlated │ │    Temporal Delta &    │
+│  Recon Harvest   │ │  Multi-Format Distillation│ │   Triangulation  │ │   Semantic Synthesis   │
+│                  │ │                           │ │                  │ │                        │
+│ • search_web     │ │ • scrape_url              │ │ • osint_deep_... │ │ • osint_wayback_...    │
+│ • search_and_... │ │ • scrape_dynamic          │ │ • osint_username │ │ • deep_crawl           │
+│ • osint_search   │ │ • extract_schema          │ │ • osint_domain   │ │ • scrape_batch         │
+│ • osint_subdom...│ │ • extract_pdf             │ │ • osint_geoint   │ │ • optimize_rag_chunks  │
+│ • extract_rss    │ │ • get_youtube_transcript  │ │ • extract_exif   │ │                        │
+│                  │ │ • extract_reddit_thread   │ │ • osint_tech_stk │ │                        │
+└──────────────────┘ └───────────────────────────┘ └──────────────────┘ └────────────────────────┘
+```
+
+### 🧩 Dynamic Combinatorial Algebra: Compose Infinite Workflows
+To solve any arbitrary goal, dynamically synthesize an emergent pattern by chaining 2 to 4 primitives:
+
+$$\text{Emergent Pattern} = \text{Seed}_i \xrightarrow{\text{Data Hand-off}} \text{Seed}_j \xrightarrow{\text{Refinement}} \text{Seed}_k$$
+
+#### 🔮 Exemplar Emergent Combinations (Generated on the Fly):
+
+1. **Competitor Strategic Drift & Pricing Delta Engine ($D \rightarrow B \rightarrow B$)**:
+   - `osint_wayback_time_machine(url, timestamp="20250101")` (Snapshot from 1 year ago)
+   - `scrape_url(url)` (Current live page)
+   - `extract_schema(schema={"tier": ".plan-name", "price": ".amount"})`
+   - *Result*: Pinpoint exactly how much pricing increased, what features were removed, and detect silent terms-of-service shifts.
+
+2. **Physical & Digital Business Legitimacy Audit ($A \rightarrow C \rightarrow B$)**:
+   - `osint_location_entity_search(entity_name, city, street)`
+   - `osint_geoint_lookup(location_query)` (Validate physical GPS existence via OpenStreetMap)
+   - `osint_domain_recon` + `osint_tech_stack` (Verify digital footprint and SSL integrity)
+   - `extract_structured(url, extract_tables=True)` (Extract registered office directors and corporate filings)
+   - *Result*: Zero-hallucination due diligence report on vendors, agencies, or lead targets.
+
+3. **Multi-Modal Research Paper & Video Synthesis ($B \rightarrow B \rightarrow D$)**:
+   - `extract_pdf(url=arxiv_paper_url)` (Ingest dense research equations & architecture text)
+   - `get_youtube_transcript(url=author_conference_talk)` (Extract high-level intuitive explanations)
+   - `optimize_rag_chunks(max_chunk_chars=1500)` (Slice both into cohesive token chunks for RAG embedding)
+   - *Result*: High-density executive digest combining academic rigor with spoken commentary.
+
+4. **Real-Time Sentiment Radar & Crisis Intelligence ($A \rightarrow B \rightarrow A$)**:
+   - `extract_rss_feed_tool(feed_url, max_items=15)` (Detect breaking news / security incident alert)
+   - `extract_reddit_thread_tool(url=discussion_url)` (Harvest unfiltered consumer & community sentiment)
+   - `osint_search(query="site:twitter.com OR site:linkedin.com incident", exclude_terms="marketing")`
+   - *Result*: Real-time 360-degree PR & technical post-mortem report before official releases.
+
+5. **Exposed Attack-Surface & Internal Infrastructure Mapping ($A \rightarrow C \rightarrow C$)**:
+   - `osint_subdomain_enumeration(domain="company.com")` (Harvest staging, test, and auth subdomains)
+   - `osint_dns_audit` + `osint_ip_lookup` (Map hosting IP providers, cloud egress, and SPF misconfigurations)
+   - `extract_image_exif(image_url="company_team_photo.jpg")` (Extract hidden camera metadata and GPS coordinates)
+   - *Result*: Comprehensive cyber reconnaissance dossier mapping internal systems without intrusive port scans.
+

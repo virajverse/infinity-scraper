@@ -223,19 +223,25 @@ Add to your `mcp_config.json`:
 
 ## 💻 Command-Line Interface (CLI)
 
-InfinityScrape provides a built-in CLI for quick terminal testing:
+InfinityScrape provides a built-in CLI (`infinity-scraper-cli` or `python -m infinity_scraper.cli`) for rapid terminal verification:
 ```bash
-# Scrape a webpage into Markdown
-infinity-scrape scrape "https://news.ycombinator.com" --format markdown
+# 1. Scrape a webpage into clean Markdown (Fast TLS or Playwright with --browser)
+infinity-scraper-cli scrape "https://news.ycombinator.com"
+infinity-scraper-cli scrape "https://example.com/spa" --browser --scroll 2
 
-# Search DuckDuckGo from the terminal
-infinity-scrape search "Generative Engine Optimization 2026" --limit 5
+# 2. Live Web Search & Instant Scraping
+infinity-scraper-cli search "Generative Engine Optimization 2026" --max 5
+infinity-scraper-cli search "Agentic Workflows" --max 3 --scrape
 
-# Extract YouTube Transcript
-infinity-scrape youtube "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+# 3. Recursive Documentation Tree Crawler
+infinity-scraper-cli crawl "https://modelcontextprotocol.io" --pages 5 --depth 2
 
-# OSINT Persona Lookup
-infinity-scrape osint --name "Linus Torvalds" --platforms github,gitlab
+# 4. Stream & Extract Remote PDF Document
+infinity-scraper-cli pdf "https://arxiv.org/pdf/1706.03762.pdf" --pages 10
+
+# Note: All 25 tools (YouTube transcripts, OSINT, GEOINT, Wayback) are directly accessible via:
+# - MCP Stdio: `python -m infinity_scraper.server`
+# - OpenAPI Bridge (Port 8000): `http://127.0.0.1:8000/docs`
 ```
 
 ---
