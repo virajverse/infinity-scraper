@@ -59,6 +59,9 @@ from infinity_scraper.engines.sitemap import (
 from infinity_scraper.engines.diff import (
     compute_page_diff,
 )
+from infinity_scraper.engines.spectra_bridge import (
+    shift_to_spectra_browser,
+)
 
 logging.basicConfig(level=logging.INFO, stream=sys.stderr, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("infinity_scraper")
@@ -133,6 +136,16 @@ async def scrape_url(
             except Exception as e:
                 logger.warning(f"Browser upgrade failed: {e}. Retaining fast engine response.")
 
+        # Tier 3: Symbiotic Escalation to Spectra Browser if Anti-Bot persists
+        if res.metadata.get("is_bot_challenge") or "prove your humanity" in res.content_markdown.lower() or res.status_code == 403:
+            logger.info(f"Anti-bot barrier active on {url}. Escalating task to Spectra Browser (Tier 3)...")
+            try:
+                spectra_res = await shift_to_spectra_browser(url=url)
+                if spectra_res and len(spectra_res.content_markdown.strip()) > len(res.content_markdown.strip()):
+                    res = spectra_res
+            except Exception as s_err:
+                logger.debug(f"Spectra Browser escalation skipped: {s_err}")
+
     output = res.format_output(
         include_metadata=True,
         include_links=include_links,
@@ -145,6 +158,46 @@ async def scrape_url(
         cache.set(url, {"formatted_output": output}, extra=cache_extra, ttl_seconds=3600)
 
     return output
+
+
+@mcp.tool()
+async def scrape_hybrid(
+    url: str,
+    max_chars: int = DEFAULT_MAX_CHARS,
+    include_tables: bool = True,
+    wait_seconds: float = 2.0,
+) -> str:
+    """
+    Autonomous Symbiotic Scraper: Scrapes at maximum speed using InfinityScrape (<150ms).
+    If any anti-bot block (Cloudflare Turnstile, Reddit Prove-your-humanity, etc.) is detected,
+    it automatically shifts the task to Spectra Browser's live human Chrome context to bypass the block.
+    """
+    url = url.strip()
+    if not url.startswith(("http://", "https://")):
+        url = "https://" + url
+
+    # Tier 1: Fast HTTP/TLS scrape
+    res = await fetch_url_fast(url=url)
+    is_blocked = (
+        res.metadata.get("is_bot_challenge")
+        or res.status_code in (403, 503)
+        or any(ind in res.content_markdown.lower() for ind in ["prove your humanity", "just a moment...", "turnstile"])
+        or len(res.content_markdown.strip()) < 120
+    )
+
+    if is_blocked:
+        logger.info(f"scrape_hybrid: Anti-bot challenge or thin content on {url}. Shifting task to Spectra Browser...")
+        spectra_res = await shift_to_spectra_browser(url=url, wait_ms=int(wait_seconds * 1000))
+        if spectra_res:
+            res = spectra_res
+        else:
+            res = await fetch_url_browser(url=url, wait_seconds=wait_seconds)
+
+    return res.format_output(
+        include_metadata=True,
+        include_tables=include_tables,
+        max_chars=max_chars,
+    )
 
 
 @mcp.tool()
