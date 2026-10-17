@@ -271,5 +271,5 @@ pytest tests/ -v
 
 ## 📄 License & Authors
 
-* **Author**: [Viraj](https://github.com/virajverse) (Founder & CEO, Taliyo Technologies)
+* **Author**: [Viraj](https://github.com/virajverse)
 * **License**: MIT License. See [LICENSE](LICENSE) for details.
